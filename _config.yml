@@ -1,0 +1,176 @@
+# Theme
+remote_theme: "mmistakes/minimal-mistakes"
+minimal_mistakes_skin: "air" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum" "sunrise"
+#theme: minima  # base Jekyll theme
+
+
+# Site settings
+title: "Simone Piccinini"
+title_separator: "|"
+subtite: "My Data Blog"
+email: piccinini.simone2005@gmail.com
+description: This is my data blog! I can add a description here. 
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://dreaazy.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: dreaazy
+github_username:  dreaazy
+repository: "dreaazy/dreaazy.github.io"
+
+locale: "en-US"
+logo: "assets/images/logo.png"
+
+# Author Profile
+author:
+  name             : "Simone Piccinini"
+  avatar           : "assets/images/avatar.png"
+  bio              : "Software Engineer, and Machine Learning Enthusiast."
+  location         : "Padua, Italy"
+  email            : piccinini.simone2005@gmail.com
+  uri              :
+  bitbucket        :
+  codepen          :
+  dribbble         :
+  flickr           :
+  facebook         :
+  foursquare       :
+  github           : "dreaazy"
+  google_plus      :
+  keybase          :
+  instagram        :
+  lastfm           :
+  linkedin         : "simone-piccinini-b32966261"
+  pinterest        :
+  soundcloud       :
+  stackoverflow    :
+  steam            :
+  tumblr           :
+  twitter          : 
+  vine             :
+  weibo            :
+  xing             :
+  youtube          :
+
+
+## Social Sharing
+#twitter:
+#  username:
+#facebook:
+#  username:
+#
+
+
+# Site Footer
+footer:
+  links:
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/simone-piccinini-b32966261/"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/laurburke"
+
+# Analytics
+analytics:
+  provider: # false (default), "google", "google-universal", "custom"
+  google:
+    tracking_id: # Ex. UA-XXXXXXXXX-XX
+    anonymize_ip: #true, false (default)
+
+# Build settings
+plugins:
+  - jekyll-feed
+  - jekyll-include-cache
+
+
+  
+# Conversion
+markdown: kramdown
+remote_theme: mmistakes/minimal-mistakes
+
+highlighter: rouge
+lsi: false
+excerpt_separator: "\n\n"
+incremental: false
+
+
+
+# Include
+include:
+  - _pages
+
+# Exclude from processing.
+# exclude:
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
+
+# Pagination
+paginate: 5  # posts per page
+#paginate_path: /page:num/
+paginate_path: /blog/page:num
+
+# Collections
+collections:
+  porfolio:
+    output: true
+    permalink: /:collection/:path/
+  archives:
+    output: true
+    permalink: /archives/:path/
+
+# Archives
+category_archive:
+  type: liquid
+  path: /categories/
+tag_archive:
+  type: liquid
+  path: /tags/
+
+# Post Formatting
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: true
+      share: false
+      related: true
+      show_date: true
+      sidebar:
+        nav: "my_sidebar"
+
+  #pages
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: single
+      author_profile: true
+      read_time: false
+      comments: true
+      share: false
+      related: false
+      sidebar:
+        nav: "my_sidebar"
+  #_portfolio
+  - scope:
+      path: ""
+      type: portfolio
+    values:
+      layout: single
+      author_profile: false
+      read_time: false
+      comments: false
+      share: false
+      related: false
