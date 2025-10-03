@@ -5,7 +5,7 @@ minimal_mistakes_skin: "air" # "air", "aqua", "contrast", "dark", "dirt", "neon"
 
 
 # Site settings
-title: "Simone Piccinini"
+title: ""
 title_separator: "|"
 subtite: "My Data Blog"
 email: piccinini.simone2005@gmail.com
@@ -17,7 +17,7 @@ github_username:  dreaazy
 repository: "dreaazy/dreaazy.github.io"
 
 locale: "en-US"
-logo: "assets/images/logo.png"
+
 
 # Author Profile
 author:
@@ -71,10 +71,11 @@ footer:
 
 # Analytics
 analytics:
-  provider: # false (default), "google", "google-universal", "custom"
+  provider: "google-universal"
   google:
-    tracking_id: # Ex. UA-XXXXXXXXX-XX
-    anonymize_ip: #true, false (default)
+    tracking_id: "G-B64TE1XYCS"  # Replace with your GA4 Measurement ID
+    anonymize_ip: true            # optional, set to true to anonymize IPs
+
 
 # Build settings
 plugins:

@@ -1,4 +1,711 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-08-02T18:10:48+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Simone Piccinini</title><subtitle>This is my data blog! I can add a description here.</subtitle><author><name>Simone Piccinini</name><email>piccinini.simone2005@gmail.com</email></author><entry><title type="html">Backpropagation</title><link href="http://localhost:4000/blog/2025/08/02/backpropagation.html" rel="alternate" type="text/html" title="Backpropagation" /><published>2025-08-02T00:00:00+02:00</published><updated>2025-08-02T00:00:00+02:00</updated><id>http://localhost:4000/blog/2025/08/02/backpropagation</id><content type="html" xml:base="http://localhost:4000/blog/2025/08/02/backpropagation.html">&lt;p&gt;The backpropagation is main algorithm used for training neural network via gradient descend.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-10-03T19:04:26+02:00</updated><id>http://localhost:4000/feed.xml</id><subtitle>This is my data blog! I can add a description here.</subtitle><author><name>Simone Piccinini</name><email>piccinini.simone2005@gmail.com</email></author><entry><title type="html">PageRank</title><link href="http://localhost:4000/blog/2025/10/03/PageRank.html" rel="alternate" type="text/html" title="PageRank" /><published>2025-10-03T00:00:00+02:00</published><updated>2025-10-03T00:00:00+02:00</updated><id>http://localhost:4000/blog/2025/10/03/PageRank</id><content type="html" xml:base="http://localhost:4000/blog/2025/10/03/PageRank.html">&lt;p&gt;The pipeline for training a Graph Neural Network can be schematized as follows:
+&lt;strong&gt;Input graph → Structural features → Learning algorithm → Prediction&lt;/strong&gt;
+One of the most challenging aspects of this pipeline is the design of structural features. These features aim to capture the essential patterns and relationships within the graph. Automating this process is a key goal in graph machine learning, and it is commonly referred to as &lt;strong&gt;feature engineering&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;These are few of the possible node level features:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;node degree (treats all neighbours equally)&lt;/li&gt;
+  &lt;li&gt;node centrality&lt;/li&gt;
+  &lt;li&gt;clustering coefficient&lt;/li&gt;
+  &lt;li&gt;graphlets&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Different ways to enstablish these features from a graph are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;engienvector centrality&lt;/li&gt;
+  &lt;li&gt;betweenness centrality&lt;/li&gt;
+  &lt;li&gt;closeness centrality (how close to the network)&lt;/li&gt;
+  &lt;li&gt;and many others&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;engienvector-centrality&quot;&gt;Engienvector centrality&lt;/h3&gt;
+
+&lt;p&gt;A node $\large v$ is important if surrounded by important neighboring nodes&lt;/p&gt;
+
+\[\large
+c_v=\frac{1}{\lambda}\sum_{u \in N(v)} c_u\]
+
+&lt;p&gt;$\lambda$ is a positive constant, it is used to normalize.
+The basic notion of this feature engineering task is “The more important my friends the more important I am”.&lt;/p&gt;
+
+&lt;p&gt;The last equation can be expressed in a matrix form:&lt;/p&gt;
+
+\[\large
+\lambda \cdot c= A \cdot c \quad (1)\]
+
+&lt;p&gt;This is an eigenvector/eigenvalue equation.&lt;/p&gt;
+
+&lt;p&gt;As we will see later, if the graph is &lt;strong&gt;undirected and connected&lt;/strong&gt;, by &lt;strong&gt;Perron-Frobenius Theorem&lt;/strong&gt; the largest eigenvalue is &lt;strong&gt;always positive and unique&lt;/strong&gt;, and the corresponding eigenvector is strictly positive.&lt;/p&gt;
+
+&lt;p&gt;The leading eigenvector $\large c_{max}$ is used as a centrality score.&lt;/p&gt;
+
+&lt;p&gt;It’s not about how many nodes are connected with you, but how important are the nodes that are connected with you.&lt;/p&gt;
+
+&lt;p&gt;Eigenvector centrality measures a node’s importance based on of its neighbors, assigning higher scores to nodes connected to other influential nodes. PageRank extends this idea by introducing a &lt;strong&gt;damping factor&lt;/strong&gt;, which simulates random jumps across the network. This adjustment makes PageRank more robust to &lt;strong&gt;dangling nodes&lt;/strong&gt; (nodes with no outgoing links) and &lt;strong&gt;spider traps&lt;/strong&gt; (subgraphs that can trap random walks), which can distort standard eigenvector centrality. By computing PageRank, one effectively obtains a &lt;strong&gt;principal eigenvector of the Google matrix&lt;/strong&gt;, and the resulting scores can be used as features that capture both the &lt;strong&gt;structural connectivity&lt;/strong&gt; and &lt;strong&gt;influence propagation&lt;/strong&gt; in the network. Compared to pure eigenvector centrality, PageRank provides more stable and meaningful importance values, making it a better choice for feature extraction in graph-based learning tasks.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-web-is-a-directed-graph&quot;&gt;The web is a directed graph&lt;/h3&gt;
+
+&lt;p&gt;Link analysis algorithms:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Pagerank&lt;/li&gt;
+  &lt;li&gt;Personalized page rank&lt;/li&gt;
+  &lt;li&gt;Random walk with restarst&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The PageRank idea:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;All in-links are not equal: some are more important than others&lt;/li&gt;
+  &lt;li&gt;Recursive nature, the importance of a node is carried by the importance of other nodes.&lt;/li&gt;
+  &lt;li&gt;A “vote” from an important page is worth more:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If a page $\large i$ with importance $\large r_i$ has $\large d_i$ out-links, each link gets $\Large \frac{r_i}{d_i}$ votes.
+Page $\large j$’s own importance $\large r_j$ is the sum of the votes n its in-links.&lt;/p&gt;
+
+&lt;p&gt;So we can define &lt;strong&gt;“rank”&lt;/strong&gt; $\large r_j$ for a node $\large j$ to be:
+\(\large
+r_j = \sum_{i \to j} \frac{r_i}{d_i} \quad (2)\)
+$d_i$ … out degree of node $\large i$.&lt;/p&gt;
+
+&lt;p&gt;It’s possible to solve this as a system using gaussian elimination, but it’s not scalable.&lt;/p&gt;
+
+&lt;p&gt;We can represent the last equation using the matrix form, we have to introduce the &lt;strong&gt;Markov matrix&lt;/strong&gt; or also called &lt;strong&gt;stochastic adjacency matrix&lt;/strong&gt;.
+More theory about the Markov stochastic matrix later.&lt;/p&gt;
+
+&lt;p&gt;Let page $\large j$ have $\large d_j$ out-links.
+If $\large j \to i$, then $\large M_{ij} = 1/d_j$.&lt;/p&gt;
+
+&lt;p&gt;$\large M$ is a &lt;strong&gt;column stochastic matrix&lt;/strong&gt;, this means that every column sums to 1.
+Now we can write the equation &lt;strong&gt;(2)&lt;/strong&gt; in matrix form as:&lt;/p&gt;
+
+\[\large
+r = M \cdot r \quad(3)\]
+
+&lt;p&gt;Solving systems of linear equations is a frequent necessity for Web search applications, but the magnitude of computations is usually too large for direct solution methods based on Gaussian elimination to be effective. Consequently, iterative techniques are often the only choice, and, because of size, sparsity, and memory considerations, the preferred algorithms are the simpler methods based on &lt;strong&gt;matrix-vector products&lt;/strong&gt; that require no additional storage beyond that of the original data. Linear stationary iterative methods are the most common.&lt;/p&gt;
+
+&lt;p&gt;Appreciate the similarity between this equation and the &lt;strong&gt;(1)&lt;/strong&gt; equation, the only difference is that $\large A$ is the adjacency matrix, while $\large M$ is the &lt;strong&gt;Markov matrix&lt;/strong&gt; or &lt;strong&gt;stochastic matrix&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;connection-to-random-walk&quot;&gt;Connection to random walk:&lt;/h3&gt;
+
+&lt;p&gt;Imagine a random surfer that at some time $\large t$ is on some page $\large i$.
+at time $\large t+1$ te surfer follow an out-link from $\large i$ uniformly at random.&lt;/p&gt;
+
+&lt;p&gt;Eventually it ends up in a page $\large j$ linked from $\large i$.&lt;/p&gt;
+
+&lt;p&gt;let $\large p(t)$ be the vector whose $\large i^{th}$ coordinates is the probability that the surfer is at page $\large i$ at time $\large t$.
+So $\large p(t)$ is a probability distribution over pages.&lt;/p&gt;
+
+&lt;p&gt;To compute where the surfer will be at the time $\large t+1$ we can apply it to the left the &lt;strong&gt;column stochastic matrix&lt;/strong&gt;.&lt;/p&gt;
+
+\[\large 
+
+p(t+1) = M \cdot p(t) \quad (4)\]
+
+&lt;p&gt;The entry $\large p_j(t+1)$ gives the probability that the surfer is on node $\large j$ at time $\large t+1$. It is computed by summing the contributions from all nodes that link to $\large j$. 
+Formally:&lt;/p&gt;
+
+\[\large
+p_j(t+1) = \sum_{i \to j} M_{ij} \, p_i(t)\]
+
+&lt;p&gt;&lt;strong&gt;Suppose&lt;/strong&gt; the random walk reaches a state where:&lt;/p&gt;
+
+\[\large
+p(t+1) = M \cdot p(t) = p(t)\]
+
+&lt;p&gt;Then $\large p(t)$ is stationary distribution of random walk.
+Our original rank vector $\large r$ satisfies $\large r = M \cdot r$, that means that our vector $\large r$ is a stationary distribution for the random walk!&lt;/p&gt;
+
+&lt;p&gt;How do we solve the equation:&lt;/p&gt;
+
+\[\large 1\cdot r = M r\]
+
+&lt;p&gt;Starting from any vector $ u$, the limit $ M(M(… M(Mu)))$ is the long-term distribution of the surfers.
+When applying a linear map $ u \to Mu$ again and again, we obtain a discrete dynamical system. We want to understand what happens with the orbit $ u_{1} = M u, u_{2} = MMu , u_{3}=MMMu$, … and find a closed formula for $ M^n u$.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;p&gt;The one-dimensional discrete dynamical system $ x \to ax$  or $ x_{n+1} = ax_n$ has the solution $ x_n = a^nx_{0}$. The value $ 1.0320 · 1000 = 1806.11$ for example is the balance on a bank account which had $ 1000$ dollars 20 years ago if the interest rate was a constant $3$ percent.&lt;/p&gt;
+
+&lt;p&gt;If $ u$ is an eigenvector with eigenvalue $\lambda$, then $ Mu = λu, M^2u = M(Mu)) = Mλu = λMu = λ^2u$ and more generally $ M^n u = λ^n u$.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[!note] Statement
+The PageRank is the principal eigenvector of M.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If $ r$ is the limit of the product $ MM \dots Mu$, then $ r$ satisfies the flow equation $ 1 \cdot r = M\cdot r$
+So $ r$ is the principal eigenvector of $ M$ with eigenvalue 1.&lt;/p&gt;
+
+&lt;p&gt;To efficiently solve for we can use the &lt;strong&gt;Power iteration method.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Summary&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PageRank measures importance of nodes in a graph using the link structure of the web&lt;/li&gt;
+  &lt;li&gt;Yo can simulate a random web surfer using stochastic adjacency matrix M&lt;/li&gt;
+  &lt;li&gt;PageRank solves $\large r = M \cdot r$ where $\large r$ can be viewed as both the principle eigenvector of $\large M$ and as the stationary distribution of a random walk over the graph.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;important-questions&quot;&gt;Important questions&lt;/h4&gt;
+
+&lt;p&gt;At this point we have an intuitive knowledge of how this algorithm works, but to properly understand the essence of it, it’s necessary to dive into the mathematics that lies behind the algorithm.
+We ought to ask ourself these important questions:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Will this iterative process continue indefinitely or will it converge?&lt;/li&gt;
+  &lt;li&gt;Under what circumstances or properties of H is it guaranteed to converge?&lt;/li&gt;
+  &lt;li&gt;Will it converge to something that makes sense in the context of the PageRank problem?&lt;/li&gt;
+  &lt;li&gt;Will it converge to just one vector or multiple vectors?&lt;/li&gt;
+  &lt;li&gt;Does the convergence depend on the starting vector π(0)T ?&lt;/li&gt;
+  &lt;li&gt;If it will converge eventually, how long is “eventually”? That is, how many iterations can we expect until convergence?
+In the following part of the article, I’m going to answer this questions and provide and example of this algorithm give an instance.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;power-iteration&quot;&gt;&lt;strong&gt;Power iteration&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;p&gt;Iterative procedure that will update over time our rank vector $\large r$.
+We start initiating every node with an initial state, continue the process until the states stabilizes.&lt;/p&gt;
+
+&lt;p&gt;Repeat until convergence: 
+\(\large
+r_j^{t+1}=\sum_{i \to j} \frac{r_j^t}{d_i}\)&lt;/p&gt;
+
+&lt;p&gt;Initialize $\large r^0 = [\frac{1}{N}, \dots, \frac{1}{N}]^T$
+Iterate: $\large r^{t+1} = M r^t$ that is the same of $\large r_j^{t+1}=\sum_{i \to j} \frac{r_j^t}{d_i}$
+Stop when $\large |r^{t+1}-r^t| &amp;lt; \epsilon$&lt;/p&gt;
+
+&lt;p&gt;About 50 iterations is sufficient to estimate the limiting solution.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;markov-matrix&quot;&gt;Markov matrix&lt;/h3&gt;
+
+&lt;p&gt;A discrete-time Markov chain is a sequence of random variables 
+$X_1, X_2, X_3, \ldots$ 
+with the Markov property, namely that the probability of moving to the next state depends &lt;strong&gt;only on the present state&lt;/strong&gt; and not on the previous states:&lt;/p&gt;
+
+\[\large
+\Pr\!\left( X_{n+1} = x \;\middle|\; X_1 = x_1, X_2 = x_2, \ldots, X_n = x_n \right)
+=
+\Pr\!\left( X_{n+1} = x \;\middle|\; X_n = x_n \right),\]
+
+&lt;p&gt;If both conditional probabilities are well defined, that is, if&lt;/p&gt;
+
+\[\large
+\Pr\!\left( X_1 = x_1, \ldots, X_n = x_n \right) &amp;gt; 0.\]
+
+&lt;p&gt;The possible values of $X_i$ form a countable set $S$ called the state space of the chain.&lt;/p&gt;
+
+&lt;p&gt;The matrix describing the markov chain is called transition matrix, but it’s also very common to call it &lt;strong&gt;stochastic matrix&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;A stochastic matrix is an $\large n \times n$ matrix where all entries are nonnegative and each row adds up to 1.&lt;/p&gt;
+
+&lt;figure&gt;
+&lt;img src=&quot;/assets/PageRank-media/Markov Matrix.png&quot; class=&quot;wikilink&quot; alt=&quot;./resources/tensor.svg&quot; /&gt;
+&lt;figcaption aria-hidden=&quot;true&quot;&gt;markov matrix&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The &lt;strong&gt;ROWS&lt;/strong&gt; represent &lt;strong&gt;NOW&lt;/strong&gt;, or &lt;strong&gt;FROM&lt;/strong&gt; $(X_t)$;&lt;/li&gt;
+  &lt;li&gt;The &lt;strong&gt;COLUMNS&lt;/strong&gt; represent NEXT, or TO $(X_t+1)$;&lt;/li&gt;
+  &lt;li&gt;Entry $(i, j)$ is the &lt;strong&gt;CONDITIONAL&lt;/strong&gt; probability that $NEXT = j$, given that $NOW = i$: the probability of going &lt;strong&gt;FROM&lt;/strong&gt; state $i$ TO &lt;strong&gt;state&lt;/strong&gt; $j$.&lt;/li&gt;
+&lt;/ul&gt;
+
+\[\large
+p_{ij} = \mathbb{P}(X_{t+1} = j | X_t=i)\]
+
+&lt;p&gt;A &lt;strong&gt;probability vector&lt;/strong&gt; or &lt;strong&gt;stochastic vector&lt;/strong&gt; is a vector with non-negative entries that add up to one.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[!note] Statement
+A &lt;strong&gt;Markov matrix&lt;/strong&gt; $\large A$ always has an eigenvalue $\large 1$. All other eigenvalues are in absolute value smaller or equal to $\large 1$&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;proof&quot;&gt;Proof:&lt;/h3&gt;
+
+&lt;p&gt;Consider the transpose matrix $A^T$. Since $A$ is row-stochastic, the sum of the 
+entries in each row of $A$ is $1$, which means that the sum of the entries in each 
+column of $A^T$ is $1$. Thus&lt;/p&gt;
+
+\[A^T 
+\begin{bmatrix}
+1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix} 
+=
+\begin{bmatrix}
+1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix},\]
+
+&lt;p&gt;so $A^T$ has eigenvalue $1$ with eigenvector 
+$\mathbf{1} = (1,1,\ldots,1)^T$.&lt;br /&gt;
+Since $A$ and $A^T$ have the same characteristic polynomial, they share the same 
+eigenvalues. Therefore, $A$ also has eigenvalue $1$.&lt;/p&gt;
+
+&lt;p&gt;Now suppose $v$ is an eigenvector of $A$ with eigenvalue $\lambda$ such that 
+$|\lambda| &amp;gt; 1$. Then&lt;/p&gt;
+
+\[A^n v = \lambda^n v,\]
+
+&lt;p&gt;which grows in length exponentially as $n \to \infty$. In particular, for large $n$, 
+some entry of $A^n v$ must have magnitude larger than $1$.&lt;/p&gt;
+
+&lt;p&gt;However, $A^n$ is also row-stochastic (this can be shown by induction), so all its 
+entries are nonnegative and each row sums to $1$. Hence every entry of $A^n$ is 
+bounded by $1$, and multiplying $A^n$ by any probability vector produces another 
+probability vector. This contradicts the assumption that an eigenvalue with 
+$|\lambda| &amp;gt; 1$ exists.&lt;/p&gt;
+
+&lt;p&gt;Therefore, all eigenvalues $\lambda$ of $A$ satisfy $|\lambda| \leq 1$, with $1$ 
+&lt;strong&gt;always&lt;/strong&gt; being an eigenvalue.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;perronfrobenius-theory&quot;&gt;Perron–Frobenius Theory&lt;/h3&gt;
+&lt;p&gt;In a presentation held by Hans Schneider titled “Why I Love Perron–Frobenius”, he addressed how the Perron-Frobenius theory of nonnegative matrices is not only extremely useful, but it is also among the most beautiful theories in mathematics.&lt;/p&gt;
+
+&lt;p&gt;The applications involving PageRank, HITS, and other ranking schemes help to underscore this principle. A matrix A is said to be nonnegative when each entry is a nonnegative number (denote this by writing $\large A ≥ 0$). Similarly, $\large A$ is a positive matrix when each $\large a_{ij}$ &amp;gt; 0 (write $\large A &amp;gt; 0$). For example, the hyperlink matrix H and the stochastic matrix M that are at the foundation of PageRank are &lt;strong&gt;nonnegative matrices&lt;/strong&gt;, and the Google matrix G is a &lt;strong&gt;positive&lt;/strong&gt; matrix. Consequently, properties of positive and nonnegative matrices govern the behavior of PageRank, and the &lt;strong&gt;Perron–Frobenius theory&lt;/strong&gt; reveals these properties by describing the nature of the dominant eigenvalues and eigenvectors of positive and nonnegative matrices.&lt;/p&gt;
+
+&lt;p&gt;For a matrix $A$, the &lt;strong&gt;spectral radius&lt;/strong&gt; is defined as&lt;/p&gt;
+
+\[\rho(A) = \max \{ |\lambda| : \lambda \in \sigma(A) \},\]
+
+&lt;p&gt;that is, the maximum absolute value among the eigenvalues of $A$.&lt;/p&gt;
+
+&lt;p&gt;In Perron’s theorem, we set $r = \rho(A)$, meaning that the eigenvalue under consideration is precisely the one with the largest modulus.&lt;br /&gt;
+For positive matrices ($A &amp;gt; 0$), this eigenvalue $r$ is real, positive, simple, and associated with an eigenvector having all positive components.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[!theorem] Perron’s Theorem for Positive Matrices
+If $A_{n \times n} &amp;gt; 0$ with $r = \rho(A)$, then the following statements are true:&lt;/p&gt;
+
+  &lt;ol&gt;
+    &lt;li&gt;$r &amp;gt; 0$.&lt;/li&gt;
+    &lt;li&gt;$r \in \sigma(A)$ (r is called the &lt;em&gt;Perron root&lt;/em&gt;).&lt;/li&gt;
+    &lt;li&gt;$\text{alg mult}_A(r) = 1$ (the Perron root is simple).&lt;/li&gt;
+    &lt;li&gt;There exists an eigenvector $x &amp;gt; 0$ such that $Ax = rx$.&lt;/li&gt;
+    &lt;li&gt;The Perron vector is the unique vector defined by&lt;br /&gt;
+\(Ap = rp, \quad p &amp;gt; 0, \quad \|p\|_1 = 1,\)
+and, except for positive multiples of $p$, there are no other nonnegative eigenvectors for $A$, regardless of the eigenvalue.&lt;/li&gt;
+    &lt;li&gt;$r$ is the only eigenvalue on the spectral circle of $A$.&lt;/li&gt;
+    &lt;li&gt;\(r = \max_{x \in N} f(x), \quad \text{(the Collatz–Wielandt formula)},\)
+   where&lt;br /&gt;
+   \(f(x) = \min_{\substack{1 \leq i \leq n \\ x_i \neq 0}} \frac{[Ax]_i}{x_i}, 
+   \quad 
+   N = \{ x \mid x \geq 0, \, x \neq 0 \}.\)&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Perron’s theorem for positive matrices is a powerful result, so it’s only natural to ask what happens when zero entries appear. Not all is lost if we are willing to be flexible. The next theorem says that part of Perron’s theorem for positive matrices can be extended to nonnegative matrices by sacrificing the existence of a positive eigenvector for a nonnegative one.&lt;/p&gt;
+
+&lt;h3 id=&quot;perrons-theorem-for-nonnegative-matrices&quot;&gt;Perron’s Theorem for Nonnegative Matrices&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[!theorem] Perron’s Theorem for Nonnegative Matrices
+If $A_{n \times n} \geq 0$ with $r = \rho(A)$, the following statements are true:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;$r \in \sigma(A)$ (but $r = 0$ is possible).&lt;/li&gt;
+    &lt;li&gt;There exists an eigenvector $x \geq 0$ such that $Ax = rx$.&lt;/li&gt;
+    &lt;li&gt;The Collatz–Wielandt formula remains valid.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;irreducibility-and-connectivity&quot;&gt;Irreducibility and Connectivity&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[!note] Statement
+A square matrix (A) is &lt;strong&gt;irreducible&lt;/strong&gt; if and only if its directed graph is strongly connected. Equivalently, for each pair of indices $i,j$ there exist $t\ge 1$ and indices $k_1,\dots,k_{t-1}$ such that
+\(\Large
+a_{i k_1} \, a_{k_1 k_2} \cdots a_{k_{t-1} j} \;&amp;gt;\; 0.\)
+Another equivalent characterization is: (A) is irreducible if and only if there does &lt;strong&gt;not&lt;/strong&gt; exist a permutation matrix (P) for which
+\(\Large
+P^{\top} A P \;=\; \begin{bmatrix} X &amp;amp; Y \\[4pt] 0 &amp;amp; Z \end{bmatrix},\)
+Where $X$ and $Z$ are square blocks. In other words, $A$ cannot be put into a nontrivial block upper-triangular form.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;perron-frobenius-theorem&quot;&gt;Perron-Frobenius Theorem&lt;/h3&gt;
+
+&lt;p&gt;Frobenius’s contribution was to realize that while properties 1, 3, 4, and 6 in Perron’s theorem for positive matrices can be lost when zeros creep into the picture (i.e., for nonnegative matrices), the trouble is not simply the existence of zero entries, but rather the problem is the location of the zero entries. In other words, Frobenius realized that the lost properties 1, 3, and 4 are in fact not lost when the zeros are in just the right locations—namely the locations that ensure that the matrix is irreducible. Unfortunately irreducibility alone still does not save property 6— it remains lost.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[!theorem] Perron–Frobenius Theorem&lt;br /&gt;
+Let $\large A \in \mathbb{R}^{n \times n}$ with $\large A \ge 0$ and irreducible. Then:&lt;/p&gt;
+
+  &lt;ol&gt;
+    &lt;li&gt;$\large r = \rho(A) &amp;gt; 0$.&lt;/li&gt;
+    &lt;li&gt;$\large r \in \sigma(A)$ (that is, $r$ is the Perron root).&lt;/li&gt;
+    &lt;li&gt;$\large \operatorname{algmult}_A(r) = 1$ (the Perron root is simple).&lt;/li&gt;
+    &lt;li&gt;There exists an eigenvector $\large x &amp;gt; 0$ such that&lt;br /&gt;
+\(\large
+A x = r x .\)&lt;/li&gt;
+    &lt;li&gt;The Perron vector is the unique vector defined by&lt;br /&gt;
+\(\large
+A p = r p, \quad p &amp;gt; 0, \quad \|p\|_1 = 1 ,\)&lt;br /&gt;
+and, except for positive multiples of $\large p$, there are no other nonnegative eigenvectors of $\large A$, regardless of the eigenvalue.&lt;/li&gt;
+    &lt;li&gt;$\large r$ need not be the only eigenvalue on the spectral circle of $\large A$.&lt;/li&gt;
+    &lt;li&gt;(Collatz–Wielandt formula)&lt;br /&gt;
+\(\large
+r = \max_{x \in N} f(x),\)&lt;br /&gt;
+where&lt;br /&gt;
+\(\large
+f(x) = \min_{1 \le i \le n, \, x_i \neq 0} \frac{[Ax]_i}{x_i}, 
+\quad N = \{ x \mid x \ge 0, \, x \neq 0 \}.\)&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;irreducible-markov-chains&quot;&gt;Irreducible Markov Chains&lt;/h4&gt;
+
+&lt;p&gt;Analyzing limiting properties of Markov chains requires that the class of stochastic matrices (and hence the class of stationary Markov chains) be divided into four mutually exclusive categories.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;M is irreducible&lt;/strong&gt; with $\displaystyle \lim_{k \to \infty} M^k$ existing&lt;br /&gt;
+(i.e., M is primitive).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;M is irreducible&lt;/strong&gt; with $\displaystyle \lim_{k \to \infty} M^k$ not existing&lt;br /&gt;
+(i.e., M is imprimitive).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;M is reducible&lt;/strong&gt; with $\displaystyle \lim_{k \to \infty} M^k$ existing.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;M is reducible&lt;/strong&gt; with $\displaystyle \lim_{k \to \infty} M^k$ not existing.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Let $\large P$ be the transition probability matrix for an &lt;strong&gt;irreducible Markov chain&lt;/strong&gt; on states ${S_1, S_2, \dots, S_n}$, and let $\large \pi^T$ be the left-hand Perron vector for $\large P$ (i.e., $\large \pi^T P = \pi^T$, $|\pi|_1 = 1$).&lt;/p&gt;
+
+&lt;p&gt;The following hold for every initial distribution $p^T(0)$:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The $k^{th}$ step transition matrix is $P^k$.&lt;br /&gt;
+The $\large (i,j)$-entry in $P^k$ is the probability of moving from $S_i$ to $S_j$ in exactly $k$ steps.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The $k$th step distribution vector is given by&lt;br /&gt;
+\(\large
+p^T(k) = p^T(0) P^k\)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $P$ is &lt;strong&gt;primitive&lt;/strong&gt; (aperiodic), and if $\large e$ is the column vector of all 1’s, then&lt;br /&gt;
+\(\large
+\lim_{k \to \infty} P^k = e \pi^T
+\quad \text{and} \quad
+\lim_{k \to \infty} p^T(k) = \pi^T\)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $P$ is &lt;strong&gt;imprimitive&lt;/strong&gt; (periodic), then&lt;br /&gt;
+\(\large
+\lim_{k \to \infty} \frac{I + P + \cdots + P^{k-1}}{k} = e \pi^T\)&lt;br /&gt;
+and&lt;br /&gt;
+\(\large
+\lim_{k \to \infty} \frac{p^T(0) + p^T(1) + \cdots + p^T(k-1)}{k} = \pi^T\)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Regardless of whether $P$ is primitive or imprimitive, the $j^{th}$ component $\pi_j$ of $\pi^T$ represents the &lt;strong&gt;long-run fraction of time&lt;/strong&gt; that the chain is in $S_j$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The vector $\pi^T$ is the &lt;strong&gt;unique stationary distribution vector&lt;/strong&gt; for the chain, because it is the unique probability distribution satisfying&lt;/p&gt;
+
+\[\large
+\pi^T P = \pi^T\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So we have seen that &lt;strong&gt;a unique positive PageRank vector&lt;/strong&gt; exists when the Google matrix is stochastic and irreducible. Further, with the additional property of aperiodicity, the power method will converge to this PageRank vector, regardless of the starting vector for the iterative process.&lt;/p&gt;
+
+&lt;h3 id=&quot;implementation&quot;&gt;Implementation&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Problems to handle:&lt;/strong&gt;
+If there are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;pages with dead ends (have no out-links)&lt;/li&gt;
+  &lt;li&gt;Spider traps (all out-links are within the group)
+Our random walk could fail.
+The solution for spider traps is teleport, at each time step, the random surfer has two options:&lt;/li&gt;
+  &lt;li&gt;with probability $\beta$, follows a link at random&lt;/li&gt;
+  &lt;li&gt;with probability $1-\beta$, jump to a random page&lt;/li&gt;
+  &lt;li&gt;Common value for $\beta$ are 0.8 to 0.9&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For dead ends, the solution is teleport with probability $\large 1$.
+The spider traps are not a mathematical problem, simply the result is not what we want.
+On the contrary, &lt;strong&gt;Dead-ends are a mathematical problems&lt;/strong&gt; since our matrix wouldn’t be anymore a column stochastic matrix.&lt;/p&gt;
+
+&lt;p&gt;This allows us to the final matrix, also called the &lt;strong&gt;google matrix&lt;/strong&gt;, it has the shape of:&lt;/p&gt;
+
+\[G_{ij} =
+\begin{cases}
+\beta \dfrac{A_{ij}}{\sum\limits_{i} A_{ij}} + (1-\beta)\dfrac{1}{N}, &amp;amp; \text{if } \sum\limits_{i} A_{ij} \neq 0, \\[1.2em]
+\dfrac{1}{N}, &amp;amp; \text{otherwise.}
+\end{cases}
+\quad \text{with } \beta = 0.85\]
+
+&lt;p&gt;Where in this case $\large \dfrac{A_{ij}}{\sum\limits_{i} A_{ij}}$ is just the stochastic matrix $\large M$.
+Here we don’t simulate the random walk, we think of it of being run infinitely long, computing this is equal to solve this recurvie equation by computing the leading eigevector of G.&lt;/p&gt;
+
+&lt;p&gt;So random walk is just an intuition that we never truly simulate.&lt;/p&gt;
+
+&lt;h2 id=&quot;example&quot;&gt;Example:&lt;/h2&gt;
+
+&lt;p&gt;Take this graph, the goal will be to extract the feature that better represent the importance of each node in the over all graph.&lt;/p&gt;
+&lt;figure&gt;
+&lt;img src=&quot;/assets/PageRank-media/matrix-1.png&quot; class=&quot;wikilink&quot; alt=&quot;./resources/tensor.svg&quot; /&gt;
+&lt;figcaption aria-hidden=&quot;true&quot;&gt;first graph&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;The first step through the process is to represent the graph as an adjacency matrix:&lt;/p&gt;
+
+&lt;p&gt;The matrix is going to be a $\large 6 \times 6$ matrix.
+We set $\large A_{i,j} = 1$ if page $\large j$ has a link to page $\large i$ and $\large A_{i,j} = 0$ otherwise.&lt;/p&gt;
+
+\[\large
+
+A =
+\begin{bmatrix}
+0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  % from 1
+1 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 0 \\[4pt]  % from 2
+0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0 \\[4pt]  % from 3
+0 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  % from 4
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1 \\[4pt]  % from 5
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 0     % from 6
+\end{bmatrix}\]
+
+&lt;p&gt;Note that the $\large 1$ in the diagonal happen only if there is a self loop.&lt;/p&gt;
+
+&lt;p&gt;Next we are going to assume that every link in that column are equally likely (equal probability out-links), so we divide every single entry of a column by the number of $\large 1$ in that column.
+Since the columns must summ up to 1.&lt;/p&gt;
+
+\[\large
+M =
+\begin{bmatrix}
+0 &amp;amp; 1/2 &amp;amp; 1/2 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  
+1 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1/3 &amp;amp; 0 \\[4pt]  
+0 &amp;amp; 0 &amp;amp; 1/2 &amp;amp; 1 &amp;amp; 1/3 &amp;amp; 0 \\[4pt] 
+0 &amp;amp; 1/2 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1 \\[4pt]  
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1/3 &amp;amp; 0   
+\end{bmatrix}\]
+
+&lt;p&gt;Now we need to eliminate spider-traps and dead-ends.&lt;/p&gt;
+
+&lt;p&gt;Do have this result we have to use the definition of google matrix I provided before:&lt;/p&gt;
+
+\[G_{ij} =
+\begin{cases}
+\beta \dfrac{A_{ij}}{\sum\limits_{i} A_{ij}} + (1-\beta)\dfrac{1}{N}, &amp;amp; \text{if } \sum\limits_{i} A_{ij} \neq 0, \\[1.2em]
+\dfrac{1}{N}, &amp;amp; \text{otherwise.}
+\end{cases}
+\quad \text{with } \beta = 0.85\]
+
+\[\large
+G =
+0.85 \cdot
+\begin{bmatrix}
+0 &amp;amp; 1/2 &amp;amp; 1/2 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  % from 1
+1 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1/3 &amp;amp; 0 \\[4pt]  % from 2
+0 &amp;amp; 0 &amp;amp; 1/2 &amp;amp; 1 &amp;amp; 1/3 &amp;amp; 0 \\[4pt]  % from 3
+0 &amp;amp; 1/2 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  % from 4
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1 \\[4pt]  % from 5
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1/3 &amp;amp; 0     % from 6
+\end{bmatrix} 
++ 0.15 \cdot
+\begin{bmatrix}
+1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 \\[4pt]
+1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 \\[4pt]
+1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 \\[4pt]
+1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 \\[4pt]
+1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 \\[4pt]
+1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6 &amp;amp; 1/6
+\end{bmatrix}\]
+
+&lt;p&gt;The middle step for computing this summation of matrixes is this:&lt;/p&gt;
+
+\[G =
+\begin{bmatrix}
+0 &amp;amp; 17/40 &amp;amp; 17/40 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  % from 1
+17/20 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 17/60 &amp;amp; 0 \\[4pt]  % from 2
+0 &amp;amp; 0 &amp;amp; 17/40 &amp;amp; 17/20 &amp;amp; 17/60 &amp;amp; 0 \\[4pt]  % from 3
+0 &amp;amp; 17/40 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 \\[4pt]  % from 4
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 17/20 \\[4pt]  % from 5
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 17/60 &amp;amp; 0     % from 6
+\end{bmatrix} 
++
+\begin{bmatrix}
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+\end{bmatrix}\]
+
+&lt;p&gt;As the final result, you can see how the property of stochastic matrix remained, but we have a full matrix that avoid problems like spider-traps and dead-ends.&lt;/p&gt;
+
+\[G =
+\begin{bmatrix}
+1/40 &amp;amp; 18/40 &amp;amp; 18/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+35/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 37/120 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 18/40 &amp;amp; 35/40 &amp;amp; 37/120 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 18/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 35/40 \\[4pt]
+1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 1/40 &amp;amp; 37/120 &amp;amp; 1/40 \\[4pt]
+\end{bmatrix}\]
+
+&lt;p&gt;Now we can iterate until we find a stable state:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Initialize $\large r^0 = [\frac{1}{N}, \dots, \frac{1}{N}]^T$&lt;/li&gt;
+  &lt;li&gt;Iterate: $\large r^{t+1} = M \cdot r^t$&lt;/li&gt;
+  &lt;li&gt;Stop when $\large \lvert r^{t+1} - r^t \rvert &amp;lt; \epsilon$&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After few iteration (according to the epsilon you chose), you will arrive in a stable solution that in my case is:&lt;/p&gt;
+
+\[\large
+r = 
+\begin{bmatrix}
+0.24534 \\ 
+0.25136 \\
+0.26819 \\ 
+0.13147 \\
+0.06128 \\
+0.04236
+\end{bmatrix}
+
+\;
+\begin{array}{l}
+\text{Node 1} \\ 
+\text{Node 2} \\
+\text{Node 3} \\
+\text{Node 4} \\
+\text{Node 5} \\
+\text{Node 6}
+\end{array}\]
+
+&lt;p&gt;You can try this for yourself just executing the pythong code you will find below.&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;fractions&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;G&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;35&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;37&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;120&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;35&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;37&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;120&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;35&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)],&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;37&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;120&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Initial rank vector (uniform)
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Stopping threshold epsilon
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Fraction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;multiply_matrix_vector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;M&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;Multiply matrix M by column vector vec (both using Fraction)&quot;&quot;&quot;&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;M&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;vector_diff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;Max absolute difference between two vectors&quot;&quot;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; 
+
+&lt;span class=&quot;c1&quot;&gt;# Iterative multiplication until convergence
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;iteration&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r_next&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;multiply_matrix_vector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;G&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;n&quot;&gt;diff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vector_diff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r_next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;n&quot;&gt;iteration&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Iteration &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iteration&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r_next&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;  | diff = &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;diff&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;diff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r_next&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;r_final&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;round&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r_next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Converged PageRank:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;enumerate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r_final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Node &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This vector represents the importance of the nodes in the graph.
+A representative image of the importance of nodes in the graph is provided below.&lt;/p&gt;
+
+&lt;figure&gt;
+&lt;img src=&quot;/assets/PageRank-media/matrix (2)-1.png&quot; class=&quot;wikilink&quot; alt=&quot;./resources/tensor.svg&quot; /&gt;
+&lt;figcaption aria-hidden=&quot;true&quot;&gt;final graph&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;Although node 5 receives links from nodes 2 and 3, its PageRank is relatively small. This is because PageRank distributes a node’s “importance” proportionally across all of its outgoing links. Node 2 and node 3 each link to multiple nodes, so the portion of their rank that reaches node 5 is only a fraction of their total importance. In other words, PageRank measures the &lt;strong&gt;probability that a random surfer lands on a node&lt;/strong&gt;, taking into account both the importance of linking nodes and how their rank is split among their outgoing links. Therefore, even if a node is linked by important nodes, it may still have a low rank if those nodes distribute their rank widely.&lt;/p&gt;
+
+&lt;h2 id=&quot;references-&quot;&gt;References 📚&lt;/h2&gt;
+
+&lt;h3 id=&quot;research-papers&quot;&gt;Research Papers&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Jure Leskovec et al., &lt;em&gt;Pixie: System for Large-Scale Graph Mining&lt;/em&gt;, &lt;a href=&quot;https://cs.stanford.edu/people/jure/pubs/pixie-www18.pdf&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Bindel, &lt;em&gt;Lecture Notes CS6210&lt;/em&gt;, Cornell University, &lt;a href=&quot;https://www.cs.cornell.edu/~bindel/class/cs6210-f16/lec/2016-10-17.pdf&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Vesak, &lt;em&gt;Stochastic Processes Notes&lt;/em&gt;, &lt;a href=&quot;https://vesak90.userpage.fu-berlin.de/stochastic.pdf&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;books&quot;&gt;Books&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Horn, R.A. &amp;amp; Johnson, C.R., &lt;em&gt;Matrix Analysis&lt;/em&gt;, 2nd Edition, &lt;a href=&quot;https://www.anandinstitute.org/pdf/Roger_A.Horn.%20_Matrix_Analysis_2nd_edition(BookSee.org).pdf&quot;&gt;PDF&lt;/a&gt;, p. 549&lt;/li&gt;
+  &lt;li&gt;Langville &amp;amp; Meyer, &lt;em&gt;Google’s PageRank and Beyond&lt;/em&gt;, &lt;a href=&quot;https://gi.cebitec.uni-bielefeld.de/_media/teaching/2019winter/alggr/langville_meyer_2006.pdf&quot;&gt;PDF&lt;/a&gt;, p. 186&lt;/li&gt;
+  &lt;li&gt;Horn &amp;amp; Johnson, &lt;em&gt;Matrix Analysis&lt;/em&gt;, Chapter 8, &lt;a href=&quot;https://web.archive.org/web/20100307021652/http://www.matrixanalysis.com/Chapter8.pdf&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;markov-chains--linear-algebra&quot;&gt;Markov Chains &amp;amp; Linear Algebra&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Knill, &lt;em&gt;Lecture Notes on Markov Chains&lt;/em&gt;, Harvard University, &lt;a href=&quot;https://people.math.harvard.edu/~knill/teaching/math19b_2011/handouts/lecture33.pdf&quot;&gt;Lecture 33&lt;/a&gt;, &lt;a href=&quot;https://people.math.harvard.edu/~knill/teaching/math19b_2011/handouts/lecture34.pdf&quot;&gt;Lecture 34&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Knill, &lt;em&gt;Linear Algebra Probability Summary&lt;/em&gt;, &lt;a href=&quot;https://people.math.harvard.edu/~knill/teaching/math19b_2011/handouts/lecture36.pdf&quot;&gt;Lecture 36&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;MathOverflow, &lt;em&gt;Examples on Non-Diagonalizable Stochastic Matrices&lt;/em&gt;, &lt;a href=&quot;https://mathoverflow.net/questions/51887/non-diagonalizable-doubly-stochastic-matrices&quot;&gt;Link&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;exercises&quot;&gt;Exercises&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Knight, &lt;em&gt;Markov Chains Exercise Sheet with Solutions&lt;/em&gt;, &lt;a href=&quot;https://vknight.org/OR_Methods/Markov_Chains/Markov_Chains_Exercise_Sheet-Solutions.pdf&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Probability Course, &lt;em&gt;Solved Problems&lt;/em&gt;, &lt;a href=&quot;https://www.probabilitycourse.com/chapter11/11_2_7_solved_probs.php&quot;&gt;Link&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Gordon, &lt;em&gt;Solved Problems on Markov Chains&lt;/em&gt;, &lt;a href=&quot;https://web.ma.utexas.edu/users/gordanz/notes/solved_problems.pdf&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;reference-notes&quot;&gt;Reference Notes&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Fewster, &lt;em&gt;Transition Matrix Definitions&lt;/em&gt;, &lt;a href=&quot;https://www.stat.auckland.ac.nz/~fewster/325/notes/ch8.pdf&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Stanford EE363, &lt;em&gt;Perron-Frobenius Theory&lt;/em&gt;, &lt;a href=&quot;https://stanford.edu/class/ee363/lectures/pf.pdf?utm_source=chatgpt.com&quot;&gt;PDF&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;YouTube, &lt;em&gt;Perron-Frobenius Theory Lecture&lt;/em&gt;, &lt;a href=&quot;https://www.youtube.com/watch?v=TU0ankRcHmo&amp;amp;t=1298s&quot;&gt;Watch&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Simone Piccinini</name><email>piccinini.simone2005@gmail.com</email></author><category term="blog" /><category term="jekyll" /><category term="images" /><summary type="html">The pipeline for training a Graph Neural Network can be schematized as follows: Input graph → Structural features → Learning algorithm → Prediction One of the most challenging aspects of this pipeline is the design of structural features. These features aim to capture the essential patterns and relationships within the graph. Automating this process is a key goal in graph machine learning, and it is commonly referred to as feature engineering.</summary></entry><entry><title type="html">Backpropagation</title><link href="http://localhost:4000/blog/2025/08/02/backpropagation.html" rel="alternate" type="text/html" title="Backpropagation" /><published>2025-08-02T00:00:00+02:00</published><updated>2025-08-02T00:00:00+02:00</updated><id>http://localhost:4000/blog/2025/08/02/backpropagation</id><content type="html" xml:base="http://localhost:4000/blog/2025/08/02/backpropagation.html">&lt;p&gt;The backpropagation is main algorithm used for training neural network via gradient descend.
 To understand deeply the topics in this essay require a basic knowledge of calculus and linear algebra.&lt;/p&gt;
 
 &lt;p&gt;What does it mean training a network so that it could learn and generalize to solve our problem?

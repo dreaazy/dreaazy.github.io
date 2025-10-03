@@ -1,0 +1,1238 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="en-US" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>PageRank</title>
+<meta name="description" content="The pipeline for training a Graph Neural Network can be schematized as follows: Input graph → Structural features → Learning algorithm → Prediction One of the most challenging aspects of this pipeline is the design of structural features. These features aim to capture the essential patterns and relationships within the graph. Automating this process is a key goal in graph machine learning, and it is commonly referred to as feature engineering.">
+
+
+  <meta name="author" content="Simone Piccinini">
+  
+  <meta property="article:author" content="Simone Piccinini">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="">
+<meta property="og:title" content="PageRank">
+<meta property="og:url" content="http://localhost:4000/blog/2025/10/03/PageRank.html">
+
+
+  <meta property="og:description" content="The pipeline for training a Graph Neural Network can be schematized as follows: Input graph → Structural features → Learning algorithm → Prediction One of the most challenging aspects of this pipeline is the design of structural features. These features aim to capture the essential patterns and relationships within the graph. Automating this process is a key goal in graph machine learning, and it is commonly referred to as feature engineering.">
+
+
+
+
+
+
+
+  <meta property="article:published_time" content="2025-10-03T00:00:00+02:00">
+
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/blog/2025/10/03/PageRank.html">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/feed.xml" type="application/atom+xml" rel="alternate" title=" Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/blog/"
+                
+                
+              >Blog</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/contact/"
+                
+                
+              >Contact</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="https://github.com/dreaazy"
+                
+                
+              >GitHub</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+
+
+<div itemscope itemtype="https://schema.org/Person" class="h-card">
+
+  
+    <div class="author__avatar">
+      <a href="http://localhost:4000/">
+        <img src="/assets/images/avatar.png" alt="Simone Piccinini" itemprop="image" class="u-photo">
+      </a>
+    </div>
+  
+
+  <div class="author__content">
+    <h3 class="author__name p-name" itemprop="name">
+      <a class="u-url" rel="me" href="http://localhost:4000/" itemprop="url">Simone Piccinini</a>
+    </h3>
+    
+      <div class="author__bio p-note" itemprop="description">
+        <p>Software Engineer, and Machine Learning Enthusiast.</p>
+
+      </div>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li itemprop="homeLocation" itemscope itemtype="https://schema.org/Place">
+          <i class="fas fa-fw fa-map-marker-alt" aria-hidden="true"></i> <span itemprop="name" class="p-locality">Padua, Italy</span>
+        </li>
+      
+
+      
+
+      
+
+      
+        <li>
+          <a href="mailto:piccinini.simone2005@gmail.com" rel="me" class="u-email">
+            <meta itemprop="email" content="piccinini.simone2005@gmail.com" />
+            <i class="fas fa-fw fa-envelope-square" aria-hidden="true"></i><span class="label">Email</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+        <li>
+          <a href="https://www.linkedin.com/in/simone-piccinini-b32966261" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+            <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span class="label">LinkedIn</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+        <li>
+          <a href="https://github.com/dreaazy" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+            <i class="fab fa-fw fa-github" aria-hidden="true"></i><span class="label">GitHub</span>
+          </a>
+        </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <!--
+  <li>
+    <a href="http://link-to-whatever-social-network.com/user/" itemprop="sameAs" rel="nofollow noopener noreferrer me">
+      <i class="fas fa-fw" aria-hidden="true"></i> Custom Social Profile Link
+    </a>
+  </li>
+-->
+    </ul>
+  </div>
+</div>
+
+  
+    
+      
+      
+      
+      
+    
+    
+      <nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">Toggle Menu</label>
+  <ul class="nav__items">
+    
+      
+      
+        <li>
+          
+            <span class="nav__sub-title">Archives</span>
+          
+
+          
+          <ul>
+            
+              <li><a href="/categories/">Category</a></li>
+            
+              <li><a href="/tags/">Tag</a></li>
+            
+          </ul>
+          
+        </li>
+      
+    
+  </ul>
+</nav>
+
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="PageRank">
+    <meta itemprop="description" content="The pipeline for training a Graph Neural Network can be schematized as follows:Input graph → Structural features → Learning algorithm → PredictionOne of the most challenging aspects of this pipeline is the design of structural features. These features aim to capture the essential patterns and relationships within the graph. Automating this process is a key goal in graph machine learning, and it is commonly referred to as feature engineering.">
+    <meta itemprop="datePublished" content="2025-10-03T00:00:00+02:00">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">
+            <a href="http://localhost:4000/blog/2025/10/03/PageRank.html" itemprop="url">PageRank
+</a>
+          </h1>
+          
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2025-10-03T00:00:00+02:00">October 3, 2025</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-clock" aria-hidden="true"></i>
+        
+          23 minute read
+        
+      </span>
+    
+  </p>
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>The pipeline for training a Graph Neural Network can be schematized as follows:
+<strong>Input graph → Structural features → Learning algorithm → Prediction</strong>
+One of the most challenging aspects of this pipeline is the design of structural features. These features aim to capture the essential patterns and relationships within the graph. Automating this process is a key goal in graph machine learning, and it is commonly referred to as <strong>feature engineering</strong>.</p>
+
+<p>These are few of the possible node level features:</p>
+
+<ul>
+  <li>node degree (treats all neighbours equally)</li>
+  <li>node centrality</li>
+  <li>clustering coefficient</li>
+  <li>graphlets</li>
+</ul>
+
+<p>Different ways to enstablish these features from a graph are:</p>
+
+<ul>
+  <li>engienvector centrality</li>
+  <li>betweenness centrality</li>
+  <li>closeness centrality (how close to the network)</li>
+  <li>and many others</li>
+</ul>
+
+<h3 id="engienvector-centrality">Engienvector centrality</h3>
+
+<p>A node $\large v$ is important if surrounded by important neighboring nodes</p>
+
+\[\large
+c_v=\frac{1}{\lambda}\sum_{u \in N(v)} c_u\]
+
+<p>$\lambda$ is a positive constant, it is used to normalize.
+The basic notion of this feature engineering task is “The more important my friends the more important I am”.</p>
+
+<p>The last equation can be expressed in a matrix form:</p>
+
+\[\large
+\lambda \cdot c= A \cdot c \quad (1)\]
+
+<p>This is an eigenvector/eigenvalue equation.</p>
+
+<p>As we will see later, if the graph is <strong>undirected and connected</strong>, by <strong>Perron-Frobenius Theorem</strong> the largest eigenvalue is <strong>always positive and unique</strong>, and the corresponding eigenvector is strictly positive.</p>
+
+<p>The leading eigenvector $\large c_{max}$ is used as a centrality score.</p>
+
+<p>It’s not about how many nodes are connected with you, but how important are the nodes that are connected with you.</p>
+
+<p>Eigenvector centrality measures a node’s importance based on of its neighbors, assigning higher scores to nodes connected to other influential nodes. PageRank extends this idea by introducing a <strong>damping factor</strong>, which simulates random jumps across the network. This adjustment makes PageRank more robust to <strong>dangling nodes</strong> (nodes with no outgoing links) and <strong>spider traps</strong> (subgraphs that can trap random walks), which can distort standard eigenvector centrality. By computing PageRank, one effectively obtains a <strong>principal eigenvector of the Google matrix</strong>, and the resulting scores can be used as features that capture both the <strong>structural connectivity</strong> and <strong>influence propagation</strong> in the network. Compared to pure eigenvector centrality, PageRank provides more stable and meaningful importance values, making it a better choice for feature extraction in graph-based learning tasks.</p>
+
+<h3 id="the-web-is-a-directed-graph">The web is a directed graph</h3>
+
+<p>Link analysis algorithms:</p>
+<ul>
+  <li>Pagerank</li>
+  <li>Personalized page rank</li>
+  <li>Random walk with restarst</li>
+</ul>
+
+<p>The PageRank idea:</p>
+<ul>
+  <li>All in-links are not equal: some are more important than others</li>
+  <li>Recursive nature, the importance of a node is carried by the importance of other nodes.</li>
+  <li>A “vote” from an important page is worth more:</li>
+</ul>
+
+<p>If a page $\large i$ with importance $\large r_i$ has $\large d_i$ out-links, each link gets $\Large \frac{r_i}{d_i}$ votes.
+Page $\large j$’s own importance $\large r_j$ is the sum of the votes n its in-links.</p>
+
+<p>So we can define <strong>“rank”</strong> $\large r_j$ for a node $\large j$ to be:
+\(\large
+r_j = \sum_{i \to j} \frac{r_i}{d_i} \quad (2)\)
+$d_i$ … out degree of node $\large i$.</p>
+
+<p>It’s possible to solve this as a system using gaussian elimination, but it’s not scalable.</p>
+
+<p>We can represent the last equation using the matrix form, we have to introduce the <strong>Markov matrix</strong> or also called <strong>stochastic adjacency matrix</strong>.
+More theory about the Markov stochastic matrix later.</p>
+
+<p>Let page $\large j$ have $\large d_j$ out-links.
+If $\large j \to i$, then $\large M_{ij} = 1/d_j$.</p>
+
+<p>$\large M$ is a <strong>column stochastic matrix</strong>, this means that every column sums to 1.
+Now we can write the equation <strong>(2)</strong> in matrix form as:</p>
+
+\[\large
+r = M \cdot r \quad(3)\]
+
+<p>Solving systems of linear equations is a frequent necessity for Web search applications, but the magnitude of computations is usually too large for direct solution methods based on Gaussian elimination to be effective. Consequently, iterative techniques are often the only choice, and, because of size, sparsity, and memory considerations, the preferred algorithms are the simpler methods based on <strong>matrix-vector products</strong> that require no additional storage beyond that of the original data. Linear stationary iterative methods are the most common.</p>
+
+<p>Appreciate the similarity between this equation and the <strong>(1)</strong> equation, the only difference is that $\large A$ is the adjacency matrix, while $\large M$ is the <strong>Markov matrix</strong> or <strong>stochastic matrix</strong>.</p>
+
+<h3 id="connection-to-random-walk">Connection to random walk:</h3>
+
+<p>Imagine a random surfer that at some time $\large t$ is on some page $\large i$.
+at time $\large t+1$ te surfer follow an out-link from $\large i$ uniformly at random.</p>
+
+<p>Eventually it ends up in a page $\large j$ linked from $\large i$.</p>
+
+<p>let $\large p(t)$ be the vector whose $\large i^{th}$ coordinates is the probability that the surfer is at page $\large i$ at time $\large t$.
+So $\large p(t)$ is a probability distribution over pages.</p>
+
+<p>To compute where the surfer will be at the time $\large t+1$ we can apply it to the left the <strong>column stochastic matrix</strong>.</p>
+
+\[\large 
+
+p(t+1) = M \cdot p(t) \quad (4)\]
+
+<p>The entry $\large p_j(t+1)$ gives the probability that the surfer is on node $\large j$ at time $\large t+1$. It is computed by summing the contributions from all nodes that link to $\large j$. 
+Formally:</p>
+
+\[\large
+p_j(t+1) = \sum_{i \to j} M_{ij} \, p_i(t)\]
+
+<p><strong>Suppose</strong> the random walk reaches a state where:</p>
+
+\[\large
+p(t+1) = M \cdot p(t) = p(t)\]
+
+<p>Then $\large p(t)$ is stationary distribution of random walk.
+Our original rank vector $\large r$ satisfies $\large r = M \cdot r$, that means that our vector $\large r$ is a stationary distribution for the random walk!</p>
+
+<p>How do we solve the equation:</p>
+
+\[\large 1\cdot r = M r\]
+
+<p>Starting from any vector $ u$, the limit $ M(M(… M(Mu)))$ is the long-term distribution of the surfers.
+When applying a linear map $ u \to Mu$ again and again, we obtain a discrete dynamical system. We want to understand what happens with the orbit $ u_{1} = M u, u_{2} = MMu , u_{3}=MMMu$, … and find a closed formula for $ M^n u$.</p>
+
+<p>For example:</p>
+
+<p>The one-dimensional discrete dynamical system $ x \to ax$  or $ x_{n+1} = ax_n$ has the solution $ x_n = a^nx_{0}$. The value $ 1.0320 · 1000 = 1806.11$ for example is the balance on a bank account which had $ 1000$ dollars 20 years ago if the interest rate was a constant $3$ percent.</p>
+
+<p>If $ u$ is an eigenvector with eigenvalue $\lambda$, then $ Mu = λu, M^2u = M(Mu)) = Mλu = λMu = λ^2u$ and more generally $ M^n u = λ^n u$.</p>
+
+<blockquote>
+  <p>[!note] Statement
+The PageRank is the principal eigenvector of M.</p>
+</blockquote>
+
+<p>If $ r$ is the limit of the product $ MM \dots Mu$, then $ r$ satisfies the flow equation $ 1 \cdot r = M\cdot r$
+So $ r$ is the principal eigenvector of $ M$ with eigenvalue 1.</p>
+
+<p>To efficiently solve for we can use the <strong>Power iteration method.</strong></p>
+
+<p><strong>Summary</strong>:</p>
+
+<ul>
+  <li>PageRank measures importance of nodes in a graph using the link structure of the web</li>
+  <li>Yo can simulate a random web surfer using stochastic adjacency matrix M</li>
+  <li>PageRank solves $\large r = M \cdot r$ where $\large r$ can be viewed as both the principle eigenvector of $\large M$ and as the stationary distribution of a random walk over the graph.</li>
+</ul>
+
+<h4 id="important-questions">Important questions</h4>
+
+<p>At this point we have an intuitive knowledge of how this algorithm works, but to properly understand the essence of it, it’s necessary to dive into the mathematics that lies behind the algorithm.
+We ought to ask ourself these important questions:</p>
+
+<ul>
+  <li>Will this iterative process continue indefinitely or will it converge?</li>
+  <li>Under what circumstances or properties of H is it guaranteed to converge?</li>
+  <li>Will it converge to something that makes sense in the context of the PageRank problem?</li>
+  <li>Will it converge to just one vector or multiple vectors?</li>
+  <li>Does the convergence depend on the starting vector π(0)T ?</li>
+  <li>If it will converge eventually, how long is “eventually”? That is, how many iterations can we expect until convergence?
+In the following part of the article, I’m going to answer this questions and provide and example of this algorithm give an instance.</li>
+</ul>
+
+<hr />
+
+<h3 id="power-iteration"><strong>Power iteration</strong></h3>
+
+<p>Iterative procedure that will update over time our rank vector $\large r$.
+We start initiating every node with an initial state, continue the process until the states stabilizes.</p>
+
+<p>Repeat until convergence: 
+\(\large
+r_j^{t+1}=\sum_{i \to j} \frac{r_j^t}{d_i}\)</p>
+
+<p>Initialize $\large r^0 = [\frac{1}{N}, \dots, \frac{1}{N}]^T$
+Iterate: $\large r^{t+1} = M r^t$ that is the same of $\large r_j^{t+1}=\sum_{i \to j} \frac{r_j^t}{d_i}$
+Stop when $\large |r^{t+1}-r^t| &lt; \epsilon$</p>
+
+<p>About 50 iterations is sufficient to estimate the limiting solution.</p>
+
+<hr />
+<h3 id="markov-matrix">Markov matrix</h3>
+
+<p>A discrete-time Markov chain is a sequence of random variables 
+$X_1, X_2, X_3, \ldots$ 
+with the Markov property, namely that the probability of moving to the next state depends <strong>only on the present state</strong> and not on the previous states:</p>
+
+\[\large
+\Pr\!\left( X_{n+1} = x \;\middle|\; X_1 = x_1, X_2 = x_2, \ldots, X_n = x_n \right)
+=
+\Pr\!\left( X_{n+1} = x \;\middle|\; X_n = x_n \right),\]
+
+<p>If both conditional probabilities are well defined, that is, if</p>
+
+\[\large
+\Pr\!\left( X_1 = x_1, \ldots, X_n = x_n \right) &gt; 0.\]
+
+<p>The possible values of $X_i$ form a countable set $S$ called the state space of the chain.</p>
+
+<p>The matrix describing the markov chain is called transition matrix, but it’s also very common to call it <strong>stochastic matrix</strong>.</p>
+
+<p>A stochastic matrix is an $\large n \times n$ matrix where all entries are nonnegative and each row adds up to 1.</p>
+
+<figure>
+<img src="/assets/PageRank-media/Markov Matrix.png" class="wikilink" alt="./resources/tensor.svg" />
+<figcaption aria-hidden="true">markov matrix</figcaption>
+</figure>
+
+<ul>
+  <li>The <strong>ROWS</strong> represent <strong>NOW</strong>, or <strong>FROM</strong> $(X_t)$;</li>
+  <li>The <strong>COLUMNS</strong> represent NEXT, or TO $(X_t+1)$;</li>
+  <li>Entry $(i, j)$ is the <strong>CONDITIONAL</strong> probability that $NEXT = j$, given that $NOW = i$: the probability of going <strong>FROM</strong> state $i$ TO <strong>state</strong> $j$.</li>
+</ul>
+
+\[\large
+p_{ij} = \mathbb{P}(X_{t+1} = j | X_t=i)\]
+
+<p>A <strong>probability vector</strong> or <strong>stochastic vector</strong> is a vector with non-negative entries that add up to one.</p>
+
+<blockquote>
+  <p>[!note] Statement
+A <strong>Markov matrix</strong> $\large A$ always has an eigenvalue $\large 1$. All other eigenvalues are in absolute value smaller or equal to $\large 1$</p>
+</blockquote>
+
+<h3 id="proof">Proof:</h3>
+
+<p>Consider the transpose matrix $A^T$. Since $A$ is row-stochastic, the sum of the 
+entries in each row of $A$ is $1$, which means that the sum of the entries in each 
+column of $A^T$ is $1$. Thus</p>
+
+\[A^T 
+\begin{bmatrix}
+1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix} 
+=
+\begin{bmatrix}
+1 \\ 1 \\ \vdots \\ 1
+\end{bmatrix},\]
+
+<p>so $A^T$ has eigenvalue $1$ with eigenvector 
+$\mathbf{1} = (1,1,\ldots,1)^T$.<br />
+Since $A$ and $A^T$ have the same characteristic polynomial, they share the same 
+eigenvalues. Therefore, $A$ also has eigenvalue $1$.</p>
+
+<p>Now suppose $v$ is an eigenvector of $A$ with eigenvalue $\lambda$ such that 
+$|\lambda| &gt; 1$. Then</p>
+
+\[A^n v = \lambda^n v,\]
+
+<p>which grows in length exponentially as $n \to \infty$. In particular, for large $n$, 
+some entry of $A^n v$ must have magnitude larger than $1$.</p>
+
+<p>However, $A^n$ is also row-stochastic (this can be shown by induction), so all its 
+entries are nonnegative and each row sums to $1$. Hence every entry of $A^n$ is 
+bounded by $1$, and multiplying $A^n$ by any probability vector produces another 
+probability vector. This contradicts the assumption that an eigenvalue with 
+$|\lambda| &gt; 1$ exists.</p>
+
+<p>Therefore, all eigenvalues $\lambda$ of $A$ satisfy $|\lambda| \leq 1$, with $1$ 
+<strong>always</strong> being an eigenvalue.</p>
+
+<hr />
+
+<h3 id="perronfrobenius-theory">Perron–Frobenius Theory</h3>
+<p>In a presentation held by Hans Schneider titled “Why I Love Perron–Frobenius”, he addressed how the Perron-Frobenius theory of nonnegative matrices is not only extremely useful, but it is also among the most beautiful theories in mathematics.</p>
+
+<p>The applications involving PageRank, HITS, and other ranking schemes help to underscore this principle. A matrix A is said to be nonnegative when each entry is a nonnegative number (denote this by writing $\large A ≥ 0$). Similarly, $\large A$ is a positive matrix when each $\large a_{ij}$ &gt; 0 (write $\large A &gt; 0$). For example, the hyperlink matrix H and the stochastic matrix M that are at the foundation of PageRank are <strong>nonnegative matrices</strong>, and the Google matrix G is a <strong>positive</strong> matrix. Consequently, properties of positive and nonnegative matrices govern the behavior of PageRank, and the <strong>Perron–Frobenius theory</strong> reveals these properties by describing the nature of the dominant eigenvalues and eigenvectors of positive and nonnegative matrices.</p>
+
+<p>For a matrix $A$, the <strong>spectral radius</strong> is defined as</p>
+
+\[\rho(A) = \max \{ |\lambda| : \lambda \in \sigma(A) \},\]
+
+<p>that is, the maximum absolute value among the eigenvalues of $A$.</p>
+
+<p>In Perron’s theorem, we set $r = \rho(A)$, meaning that the eigenvalue under consideration is precisely the one with the largest modulus.<br />
+For positive matrices ($A &gt; 0$), this eigenvalue $r$ is real, positive, simple, and associated with an eigenvector having all positive components.</p>
+
+<blockquote>
+  <p>[!theorem] Perron’s Theorem for Positive Matrices
+If $A_{n \times n} &gt; 0$ with $r = \rho(A)$, then the following statements are true:</p>
+
+  <ol>
+    <li>$r &gt; 0$.</li>
+    <li>$r \in \sigma(A)$ (r is called the <em>Perron root</em>).</li>
+    <li>$\text{alg mult}_A(r) = 1$ (the Perron root is simple).</li>
+    <li>There exists an eigenvector $x &gt; 0$ such that $Ax = rx$.</li>
+    <li>The Perron vector is the unique vector defined by<br />
+\(Ap = rp, \quad p &gt; 0, \quad \|p\|_1 = 1,\)
+and, except for positive multiples of $p$, there are no other nonnegative eigenvectors for $A$, regardless of the eigenvalue.</li>
+    <li>$r$ is the only eigenvalue on the spectral circle of $A$.</li>
+    <li>\(r = \max_{x \in N} f(x), \quad \text{(the Collatz–Wielandt formula)},\)
+   where<br />
+   \(f(x) = \min_{\substack{1 \leq i \leq n \\ x_i \neq 0}} \frac{[Ax]_i}{x_i}, 
+   \quad 
+   N = \{ x \mid x \geq 0, \, x \neq 0 \}.\)</li>
+  </ol>
+</blockquote>
+
+<p>Perron’s theorem for positive matrices is a powerful result, so it’s only natural to ask what happens when zero entries appear. Not all is lost if we are willing to be flexible. The next theorem says that part of Perron’s theorem for positive matrices can be extended to nonnegative matrices by sacrificing the existence of a positive eigenvector for a nonnegative one.</p>
+
+<h3 id="perrons-theorem-for-nonnegative-matrices">Perron’s Theorem for Nonnegative Matrices</h3>
+
+<blockquote>
+  <p>[!theorem] Perron’s Theorem for Nonnegative Matrices
+If $A_{n \times n} \geq 0$ with $r = \rho(A)$, the following statements are true:</p>
+
+  <ul>
+    <li>$r \in \sigma(A)$ (but $r = 0$ is possible).</li>
+    <li>There exists an eigenvector $x \geq 0$ such that $Ax = rx$.</li>
+    <li>The Collatz–Wielandt formula remains valid.</li>
+  </ul>
+</blockquote>
+
+<h4 id="irreducibility-and-connectivity">Irreducibility and Connectivity</h4>
+
+<blockquote>
+  <p>[!note] Statement
+A square matrix (A) is <strong>irreducible</strong> if and only if its directed graph is strongly connected. Equivalently, for each pair of indices $i,j$ there exist $t\ge 1$ and indices $k_1,\dots,k_{t-1}$ such that
+\(\Large
+a_{i k_1} \, a_{k_1 k_2} \cdots a_{k_{t-1} j} \;&gt;\; 0.\)
+Another equivalent characterization is: (A) is irreducible if and only if there does <strong>not</strong> exist a permutation matrix (P) for which
+\(\Large
+P^{\top} A P \;=\; \begin{bmatrix} X &amp; Y \\[4pt] 0 &amp; Z \end{bmatrix},\)
+Where $X$ and $Z$ are square blocks. In other words, $A$ cannot be put into a nontrivial block upper-triangular form.</p>
+</blockquote>
+
+<h3 id="perron-frobenius-theorem">Perron-Frobenius Theorem</h3>
+
+<p>Frobenius’s contribution was to realize that while properties 1, 3, 4, and 6 in Perron’s theorem for positive matrices can be lost when zeros creep into the picture (i.e., for nonnegative matrices), the trouble is not simply the existence of zero entries, but rather the problem is the location of the zero entries. In other words, Frobenius realized that the lost properties 1, 3, and 4 are in fact not lost when the zeros are in just the right locations—namely the locations that ensure that the matrix is irreducible. Unfortunately irreducibility alone still does not save property 6— it remains lost.</p>
+
+<blockquote>
+  <p>[!theorem] Perron–Frobenius Theorem<br />
+Let $\large A \in \mathbb{R}^{n \times n}$ with $\large A \ge 0$ and irreducible. Then:</p>
+
+  <ol>
+    <li>$\large r = \rho(A) &gt; 0$.</li>
+    <li>$\large r \in \sigma(A)$ (that is, $r$ is the Perron root).</li>
+    <li>$\large \operatorname{algmult}_A(r) = 1$ (the Perron root is simple).</li>
+    <li>There exists an eigenvector $\large x &gt; 0$ such that<br />
+\(\large
+A x = r x .\)</li>
+    <li>The Perron vector is the unique vector defined by<br />
+\(\large
+A p = r p, \quad p &gt; 0, \quad \|p\|_1 = 1 ,\)<br />
+and, except for positive multiples of $\large p$, there are no other nonnegative eigenvectors of $\large A$, regardless of the eigenvalue.</li>
+    <li>$\large r$ need not be the only eigenvalue on the spectral circle of $\large A$.</li>
+    <li>(Collatz–Wielandt formula)<br />
+\(\large
+r = \max_{x \in N} f(x),\)<br />
+where<br />
+\(\large
+f(x) = \min_{1 \le i \le n, \, x_i \neq 0} \frac{[Ax]_i}{x_i}, 
+\quad N = \{ x \mid x \ge 0, \, x \neq 0 \}.\)</li>
+  </ol>
+</blockquote>
+
+<h4 id="irreducible-markov-chains">Irreducible Markov Chains</h4>
+
+<p>Analyzing limiting properties of Markov chains requires that the class of stochastic matrices (and hence the class of stationary Markov chains) be divided into four mutually exclusive categories.</p>
+
+<ol>
+  <li>
+    <p><strong>M is irreducible</strong> with $\displaystyle \lim_{k \to \infty} M^k$ existing<br />
+(i.e., M is primitive).</p>
+  </li>
+  <li>
+    <p><strong>M is irreducible</strong> with $\displaystyle \lim_{k \to \infty} M^k$ not existing<br />
+(i.e., M is imprimitive).</p>
+  </li>
+  <li>
+    <p><strong>M is reducible</strong> with $\displaystyle \lim_{k \to \infty} M^k$ existing.</p>
+  </li>
+  <li>
+    <p><strong>M is reducible</strong> with $\displaystyle \lim_{k \to \infty} M^k$ not existing.</p>
+  </li>
+</ol>
+
+<p>Let $\large P$ be the transition probability matrix for an <strong>irreducible Markov chain</strong> on states ${S_1, S_2, \dots, S_n}$, and let $\large \pi^T$ be the left-hand Perron vector for $\large P$ (i.e., $\large \pi^T P = \pi^T$, $|\pi|_1 = 1$).</p>
+
+<p>The following hold for every initial distribution $p^T(0)$:</p>
+
+<ul>
+  <li>
+    <p>The $k^{th}$ step transition matrix is $P^k$.<br />
+The $\large (i,j)$-entry in $P^k$ is the probability of moving from $S_i$ to $S_j$ in exactly $k$ steps.</p>
+  </li>
+  <li>
+    <p>The $k$th step distribution vector is given by<br />
+\(\large
+p^T(k) = p^T(0) P^k\)</p>
+  </li>
+  <li>
+    <p>If $P$ is <strong>primitive</strong> (aperiodic), and if $\large e$ is the column vector of all 1’s, then<br />
+\(\large
+\lim_{k \to \infty} P^k = e \pi^T
+\quad \text{and} \quad
+\lim_{k \to \infty} p^T(k) = \pi^T\)</p>
+  </li>
+  <li>
+    <p>If $P$ is <strong>imprimitive</strong> (periodic), then<br />
+\(\large
+\lim_{k \to \infty} \frac{I + P + \cdots + P^{k-1}}{k} = e \pi^T\)<br />
+and<br />
+\(\large
+\lim_{k \to \infty} \frac{p^T(0) + p^T(1) + \cdots + p^T(k-1)}{k} = \pi^T\)</p>
+  </li>
+  <li>
+    <p>Regardless of whether $P$ is primitive or imprimitive, the $j^{th}$ component $\pi_j$ of $\pi^T$ represents the <strong>long-run fraction of time</strong> that the chain is in $S_j$.</p>
+  </li>
+  <li>
+    <p>The vector $\pi^T$ is the <strong>unique stationary distribution vector</strong> for the chain, because it is the unique probability distribution satisfying</p>
+
+\[\large
+\pi^T P = \pi^T\]
+  </li>
+</ul>
+
+<p>So we have seen that <strong>a unique positive PageRank vector</strong> exists when the Google matrix is stochastic and irreducible. Further, with the additional property of aperiodicity, the power method will converge to this PageRank vector, regardless of the starting vector for the iterative process.</p>
+
+<h3 id="implementation">Implementation</h3>
+<p><strong>Problems to handle:</strong>
+If there are:</p>
+<ul>
+  <li>pages with dead ends (have no out-links)</li>
+  <li>Spider traps (all out-links are within the group)
+Our random walk could fail.
+The solution for spider traps is teleport, at each time step, the random surfer has two options:</li>
+  <li>with probability $\beta$, follows a link at random</li>
+  <li>with probability $1-\beta$, jump to a random page</li>
+  <li>Common value for $\beta$ are 0.8 to 0.9</li>
+</ul>
+
+<p>For dead ends, the solution is teleport with probability $\large 1$.
+The spider traps are not a mathematical problem, simply the result is not what we want.
+On the contrary, <strong>Dead-ends are a mathematical problems</strong> since our matrix wouldn’t be anymore a column stochastic matrix.</p>
+
+<p>This allows us to the final matrix, also called the <strong>google matrix</strong>, it has the shape of:</p>
+
+\[G_{ij} =
+\begin{cases}
+\beta \dfrac{A_{ij}}{\sum\limits_{i} A_{ij}} + (1-\beta)\dfrac{1}{N}, &amp; \text{if } \sum\limits_{i} A_{ij} \neq 0, \\[1.2em]
+\dfrac{1}{N}, &amp; \text{otherwise.}
+\end{cases}
+\quad \text{with } \beta = 0.85\]
+
+<p>Where in this case $\large \dfrac{A_{ij}}{\sum\limits_{i} A_{ij}}$ is just the stochastic matrix $\large M$.
+Here we don’t simulate the random walk, we think of it of being run infinitely long, computing this is equal to solve this recurvie equation by computing the leading eigevector of G.</p>
+
+<p>So random walk is just an intuition that we never truly simulate.</p>
+
+<h2 id="example">Example:</h2>
+
+<p>Take this graph, the goal will be to extract the feature that better represent the importance of each node in the over all graph.</p>
+<figure>
+<img src="/assets/PageRank-media/matrix-1.png" class="wikilink" alt="./resources/tensor.svg" />
+<figcaption aria-hidden="true">first graph</figcaption>
+</figure>
+
+<p>The first step through the process is to represent the graph as an adjacency matrix:</p>
+
+<p>The matrix is going to be a $\large 6 \times 6$ matrix.
+We set $\large A_{i,j} = 1$ if page $\large j$ has a link to page $\large i$ and $\large A_{i,j} = 0$ otherwise.</p>
+
+\[\large
+
+A =
+\begin{bmatrix}
+0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  % from 1
+1 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 \\[4pt]  % from 2
+0 &amp; 0 &amp; 1 &amp; 1 &amp; 1 &amp; 0 \\[4pt]  % from 3
+0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  % from 4
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 \\[4pt]  % from 5
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0     % from 6
+\end{bmatrix}\]
+
+<p>Note that the $\large 1$ in the diagonal happen only if there is a self loop.</p>
+
+<p>Next we are going to assume that every link in that column are equally likely (equal probability out-links), so we divide every single entry of a column by the number of $\large 1$ in that column.
+Since the columns must summ up to 1.</p>
+
+\[\large
+M =
+\begin{bmatrix}
+0 &amp; 1/2 &amp; 1/2 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  
+1 &amp; 0 &amp; 0 &amp; 0 &amp; 1/3 &amp; 0 \\[4pt]  
+0 &amp; 0 &amp; 1/2 &amp; 1 &amp; 1/3 &amp; 0 \\[4pt] 
+0 &amp; 1/2 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 \\[4pt]  
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 1/3 &amp; 0   
+\end{bmatrix}\]
+
+<p>Now we need to eliminate spider-traps and dead-ends.</p>
+
+<p>Do have this result we have to use the definition of google matrix I provided before:</p>
+
+\[G_{ij} =
+\begin{cases}
+\beta \dfrac{A_{ij}}{\sum\limits_{i} A_{ij}} + (1-\beta)\dfrac{1}{N}, &amp; \text{if } \sum\limits_{i} A_{ij} \neq 0, \\[1.2em]
+\dfrac{1}{N}, &amp; \text{otherwise.}
+\end{cases}
+\quad \text{with } \beta = 0.85\]
+
+\[\large
+G =
+0.85 \cdot
+\begin{bmatrix}
+0 &amp; 1/2 &amp; 1/2 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  % from 1
+1 &amp; 0 &amp; 0 &amp; 0 &amp; 1/3 &amp; 0 \\[4pt]  % from 2
+0 &amp; 0 &amp; 1/2 &amp; 1 &amp; 1/3 &amp; 0 \\[4pt]  % from 3
+0 &amp; 1/2 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  % from 4
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 \\[4pt]  % from 5
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 1/3 &amp; 0     % from 6
+\end{bmatrix} 
++ 0.15 \cdot
+\begin{bmatrix}
+1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 \\[4pt]
+1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 \\[4pt]
+1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 \\[4pt]
+1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 \\[4pt]
+1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 \\[4pt]
+1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6 &amp; 1/6
+\end{bmatrix}\]
+
+<p>The middle step for computing this summation of matrixes is this:</p>
+
+\[G =
+\begin{bmatrix}
+0 &amp; 17/40 &amp; 17/40 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  % from 1
+17/20 &amp; 0 &amp; 0 &amp; 0 &amp; 17/60 &amp; 0 \\[4pt]  % from 2
+0 &amp; 0 &amp; 17/40 &amp; 17/20 &amp; 17/60 &amp; 0 \\[4pt]  % from 3
+0 &amp; 17/40 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\[4pt]  % from 4
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 17/20 \\[4pt]  % from 5
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 17/60 &amp; 0     % from 6
+\end{bmatrix} 
++
+\begin{bmatrix}
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+\end{bmatrix}\]
+
+<p>As the final result, you can see how the property of stochastic matrix remained, but we have a full matrix that avoid problems like spider-traps and dead-ends.</p>
+
+\[G =
+\begin{bmatrix}
+1/40 &amp; 18/40 &amp; 18/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+35/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 37/120 &amp; 1/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 18/40 &amp; 35/40 &amp; 37/120 &amp; 1/40 \\[4pt]
+1/40 &amp; 18/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 35/40 \\[4pt]
+1/40 &amp; 1/40 &amp; 1/40 &amp; 1/40 &amp; 37/120 &amp; 1/40 \\[4pt]
+\end{bmatrix}\]
+
+<p>Now we can iterate until we find a stable state:</p>
+
+<ul>
+  <li>Initialize $\large r^0 = [\frac{1}{N}, \dots, \frac{1}{N}]^T$</li>
+  <li>Iterate: $\large r^{t+1} = M \cdot r^t$</li>
+  <li>Stop when $\large \lvert r^{t+1} - r^t \rvert &lt; \epsilon$</li>
+</ul>
+
+<p>After few iteration (according to the epsilon you chose), you will arrive in a stable solution that in my case is:</p>
+
+\[\large
+r = 
+\begin{bmatrix}
+0.24534 \\ 
+0.25136 \\
+0.26819 \\ 
+0.13147 \\
+0.06128 \\
+0.04236
+\end{bmatrix}
+
+\;
+\begin{array}{l}
+\text{Node 1} \\ 
+\text{Node 2} \\
+\text{Node 3} \\
+\text{Node 4} \\
+\text{Node 5} \\
+\text{Node 6}
+\end{array}\]
+
+<p>You can try this for yourself just executing the pythong code you will find below.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">fractions</span> <span class="kn">import</span> <span class="n">Fraction</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="p">[</span>
+<span class="err"> </span> <span class="err"> </span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">)],</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span><span class="mi">120</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">)],</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span><span class="mi">120</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">)],</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">)],</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span><span class="mi">40</span><span class="p">)],</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span><span class="mi">120</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">40</span><span class="p">)]</span>
+<span class="p">]</span>
+
+<span class="c1"># Initial rank vector (uniform)
+</span>
+<span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
+
+<span class="c1"># Stopping threshold epsilon
+</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">Fraction</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> 
+
+<span class="k">def</span> <span class="nf">multiply_matrix_vector</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="s">"""Multiply matrix M by column vector vec (both using Fraction)"""</span>
+<span class="err"> </span> <span class="err"> </span> <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">M</span><span class="p">:</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="n">s</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">c</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">vec</span><span class="p">))</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="n">result</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">vector_diff</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="s">"""Max absolute difference between two vectors"""</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">))</span> 
+
+<span class="c1"># Iterative multiplication until convergence
+</span>
+<span class="n">iteration</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="n">r_next</span> <span class="o">=</span> <span class="n">multiply_matrix_vector</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="n">diff</span> <span class="o">=</span> <span class="n">vector_diff</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r_next</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s">: </span><span class="si">{</span><span class="n">r_next</span><span class="si">}</span><span class="s">  | diff = </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="err"> </span> <span class="k">break</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="n">r</span> <span class="o">=</span> <span class="n">r_next</span>
+
+<span class="n">r_final</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r_next</span><span class="p">]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Converged PageRank:"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r_final</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+
+<span class="err"> </span> <span class="err"> </span> <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Node </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s">: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This vector represents the importance of the nodes in the graph.
+A representative image of the importance of nodes in the graph is provided below.</p>
+
+<figure>
+<img src="/assets/PageRank-media/matrix (2)-1.png" class="wikilink" alt="./resources/tensor.svg" />
+<figcaption aria-hidden="true">final graph</figcaption>
+</figure>
+
+<p>Although node 5 receives links from nodes 2 and 3, its PageRank is relatively small. This is because PageRank distributes a node’s “importance” proportionally across all of its outgoing links. Node 2 and node 3 each link to multiple nodes, so the portion of their rank that reaches node 5 is only a fraction of their total importance. In other words, PageRank measures the <strong>probability that a random surfer lands on a node</strong>, taking into account both the importance of linking nodes and how their rank is split among their outgoing links. Therefore, even if a node is linked by important nodes, it may still have a low rank if those nodes distribute their rank widely.</p>
+
+<h2 id="references-">References 📚</h2>
+
+<h3 id="research-papers">Research Papers</h3>
+<ul>
+  <li>Jure Leskovec et al., <em>Pixie: System for Large-Scale Graph Mining</em>, <a href="https://cs.stanford.edu/people/jure/pubs/pixie-www18.pdf">PDF</a></li>
+  <li>Bindel, <em>Lecture Notes CS6210</em>, Cornell University, <a href="https://www.cs.cornell.edu/~bindel/class/cs6210-f16/lec/2016-10-17.pdf">PDF</a></li>
+  <li>Vesak, <em>Stochastic Processes Notes</em>, <a href="https://vesak90.userpage.fu-berlin.de/stochastic.pdf">PDF</a></li>
+</ul>
+
+<h3 id="books">Books</h3>
+<ul>
+  <li>Horn, R.A. &amp; Johnson, C.R., <em>Matrix Analysis</em>, 2nd Edition, <a href="https://www.anandinstitute.org/pdf/Roger_A.Horn.%20_Matrix_Analysis_2nd_edition(BookSee.org).pdf">PDF</a>, p. 549</li>
+  <li>Langville &amp; Meyer, <em>Google’s PageRank and Beyond</em>, <a href="https://gi.cebitec.uni-bielefeld.de/_media/teaching/2019winter/alggr/langville_meyer_2006.pdf">PDF</a>, p. 186</li>
+  <li>Horn &amp; Johnson, <em>Matrix Analysis</em>, Chapter 8, <a href="https://web.archive.org/web/20100307021652/http://www.matrixanalysis.com/Chapter8.pdf">PDF</a></li>
+</ul>
+
+<h3 id="markov-chains--linear-algebra">Markov Chains &amp; Linear Algebra</h3>
+<ul>
+  <li>Knill, <em>Lecture Notes on Markov Chains</em>, Harvard University, <a href="https://people.math.harvard.edu/~knill/teaching/math19b_2011/handouts/lecture33.pdf">Lecture 33</a>, <a href="https://people.math.harvard.edu/~knill/teaching/math19b_2011/handouts/lecture34.pdf">Lecture 34</a></li>
+  <li>Knill, <em>Linear Algebra Probability Summary</em>, <a href="https://people.math.harvard.edu/~knill/teaching/math19b_2011/handouts/lecture36.pdf">Lecture 36</a></li>
+  <li>MathOverflow, <em>Examples on Non-Diagonalizable Stochastic Matrices</em>, <a href="https://mathoverflow.net/questions/51887/non-diagonalizable-doubly-stochastic-matrices">Link</a></li>
+</ul>
+
+<h3 id="exercises">Exercises</h3>
+<ul>
+  <li>Knight, <em>Markov Chains Exercise Sheet with Solutions</em>, <a href="https://vknight.org/OR_Methods/Markov_Chains/Markov_Chains_Exercise_Sheet-Solutions.pdf">PDF</a></li>
+  <li>Probability Course, <em>Solved Problems</em>, <a href="https://www.probabilitycourse.com/chapter11/11_2_7_solved_probs.php">Link</a></li>
+  <li>Gordon, <em>Solved Problems on Markov Chains</em>, <a href="https://web.ma.utexas.edu/users/gordanz/notes/solved_problems.pdf">PDF</a></li>
+</ul>
+
+<h3 id="reference-notes">Reference Notes</h3>
+<ul>
+  <li>Fewster, <em>Transition Matrix Definitions</em>, <a href="https://www.stat.auckland.ac.nz/~fewster/325/notes/ch8.pdf">PDF</a></li>
+  <li>Stanford EE363, <em>Perron-Frobenius Theory</em>, <a href="https://stanford.edu/class/ee363/lectures/pf.pdf?utm_source=chatgpt.com">PDF</a></li>
+  <li>YouTube, <em>Perron-Frobenius Theory Lecture</em>, <a href="https://www.youtube.com/watch?v=TU0ankRcHmo&amp;t=1298s">Watch</a></li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> Tags: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/tags/#images" class="page__taxonomy-item p-category" rel="tag">images</a><span class="sep">, </span>
+    
+      <a href="/tags/#jekyll" class="page__taxonomy-item p-category" rel="tag">jekyll</a>
+    
+    </span>
+  </p>
+
+
+
+
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-folder-open" aria-hidden="true"></i> Categories: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/categories/#blog" class="page__taxonomy-item p-category" rel="tag">blog</a>
+    
+    </span>
+  </p>
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> Updated:</strong> <time class="dt-published" datetime="2025-10-03T00:00:00+02:00">October 3, 2025</time></p>
+
+      </footer>
+
+      
+
+      
+  <nav class="pagination">
+    
+      <a href="/blog/2025/08/02/backpropagation.html" class="pagination--pager" title="Backpropagation">Previous</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">Next</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">You May Also Enjoy</h2>
+  <div class="grid__wrapper">
+    
+      
+      
+
+
+
+<div class="grid__item">
+  <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
+    
+    <h2 class="archive__item-title no_toc" itemprop="headline">
+      
+        <a href="/blog/2025/08/02/backpropagation.html" rel="permalink">Backpropagation
+</a>
+      
+    </h2>
+    
+
+  <p class="page__meta">
+    
+      
+      <span class="page__meta-date">
+        <i class="far fa-fw fa-calendar-alt" aria-hidden="true"></i>
+        
+        <time datetime="2025-08-02T00:00:00+02:00">August 2, 2025</time>
+      </span>
+    
+
+    <span class="page__meta-sep"></span>
+
+    
+      
+      
+
+      <span class="page__meta-readtime">
+        <i class="far fa-fw fa-clock" aria-hidden="true"></i>
+        
+          36 minute read
+        
+      </span>
+    
+  </p>
+
+
+    <p class="archive__item-excerpt" itemprop="description">The backpropagation is main algorithm used for training neural network via gradient descend.
+To understand deeply the topics in this essay require a basic kn...</p>
+  </article>
+</div>
+
+    
+  </div>
+</div>
+
+  
+  
+</div>
+
+      
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+      
+        
+          <li><a href="https://www.linkedin.com/in/simone-piccinini-b32966261/" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+        
+      
+        
+          <li><a href="https://github.com/laurburke" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="http://localhost:4000"></a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+
+<script async id="MathJax-script"
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+  </body>
+</html>
