@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, master] # This triggers the build on either branch
+    branches: [main, master]
   workflow_dispatch:
 
 permissions:
@@ -16,15 +16,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'npm'
+
       - name: Install dependencies
         run: npm install
+
       - name: Build Astro
         run: npm run build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -37,10 +41,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2 # or v6 if available
-      - name: Setup Node
-        uses: actions/setup-node@v4 # Check for latest minor updates
-        with:
-          node-version: 24 #
-          cache: 'npm'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
