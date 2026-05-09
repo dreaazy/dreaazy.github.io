@@ -37,6 +37,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Checkout
+        uses: actions/checkout@v4.2.2 # or v6 if available
+      - name: Setup Node
+        uses: actions/setup-node@v4 # Check for latest minor updates
+        with:
+          node-version: 24 #
+          cache: 'npm'
