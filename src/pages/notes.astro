@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+// Fetch all notes and sort them by newest first
+const allNotes = await getCollection("notes");
+const sortedNotes = allNotes.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="My Notes" description="Standalone thoughts and academic notes">
+  <div class="mb-8 border-b pb-4">
+    <h2 class="text-3xl font-bold">
+      <span class="fancy-highlight">Notes and articles</span>
+    </h2>
+    <p class="text-base-content/60 mt-2">Deep dive explanation</p>
+  </div>
+
+  <section class="flex flex-col gap-4">
+    {
+      sortedNotes.map((note) => (
+        <a 
+          href={`/notes/${note.id}`} 
+          class="flex flex-col p-6 rounded-xl border border-base-content/10 hover:border-primary hover:bg-base-200 transition-colors"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xl font-bold m-0">{note.data.title}</h3>
+            <span class="text-sm font-mono text-base-content/50">
+              {note.data.pubDate.toLocaleDateString()}
+            </span>
+          </div>
+          {note.data.description && (
+            <p class="text-base-content/70 m-0">{note.data.description}</p>
+          )}
+          {note.data.tags && (
+            <div class="flex gap-2 mt-3">
+              {note.data.tags.map(tag => (
+                <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-md">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </a>
+      ))
+    }
+  </section>
+</Layout>

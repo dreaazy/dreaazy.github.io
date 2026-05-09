@@ -1,0 +1,6 @@
+---
+title: "Backpropagation"
+description: ""
+pubDate: 2026-05-09
+tags: [""]
+---

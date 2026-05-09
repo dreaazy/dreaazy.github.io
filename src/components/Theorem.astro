@@ -1,0 +1,12 @@
+---
+const { title = "Theorem" } = Astro.props;
+---
+
+<div class="my-8 border-l-4 border-primary bg-primary/5 p-6 rounded-r-xl shadow-sm">
+  <div class="flex items-center gap-2 mb-4">
+    <span class="text-primary font-bold uppercase tracking-widest text-sm">{title}</span>
+  </div>
+  <div class="theorem-content italic text-base-content/90">
+    <slot />
+  </div>
+</div>

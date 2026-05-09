@@ -1,0 +1,66 @@
+
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { Github, Globe } from "@lucide/astro";
+import { meta } from "../consts.ts"; // Keep meta for titles
+import { getCollection } from "astro:content";
+
+// 1. Fetch all projects from the content folder
+const allProjects = await getCollection("projects");
+
+
+const projectHubs = allProjects.filter(entry => !entry.id.includes('/'));
+---
+
+<Layout title={meta.projects.title} description={meta.projects.description}>
+  <h2>
+    <span class="fancy-highlight">My Research Projects</span>
+  </h2>
+
+  <section class="mt-6 flex flex-col gap-10">
+    {
+      projectHubs.map((proj) => (
+        <div class="flex gap-6 border-b border-base-content/10 pb-8 last:border-none">
+          {/* Circular Logo Style */}
+          <div class="flex-shrink-0">
+             {proj.data.heroImage && (
+                <div class="h-16 w-16 rounded-full bg-white flex items-center justify-center overflow-hidden">
+                  <Image 
+                    src={proj.data.heroImage} 
+                    alt={proj.data.title} 
+                    class="h-full w-full object-contain p-2"
+                  />
+                </div>
+             )}
+          </div>
+
+          <div class="flex-1">
+            <h3 class="text-xl font-bold">{proj.data.title}</h3>
+            
+            <p class="text-base-content/80 mt-1 italic">
+              {proj.data.description}
+            </p>
+
+            <div class="mt-4 flex gap-2">
+              {/* This link now points to your [...slug].astro page */}
+              <a
+                href={`/projects/${proj.id.replace('/index', '')}`}
+                class="btn btn-primary btn-sm px-6"
+              >
+                View Project & Research
+              </a>
+              
+              {/* Optional: GitHub Link */}
+              {proj.data.sourceHref && (
+                <a href={proj.data.sourceHref} target="_blank" class="btn btn-soft btn-sm">
+                  <Github size="18" /> Source
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </section>
+</Layout>

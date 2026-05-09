@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui" {
+  themes: corporate, dark;
+}
+
+@theme {
+  --default-font-family: "Inter", var(--font-sans);
+}
+
+@layer components {
+  .fancy-highlight {
+    @apply rounded-md bg-[var(--color-base-300)]/30 underline decoration-[var(--color-accent)] decoration-2 underline-offset-4 backdrop-blur-2xl;
+  }
+
+  .primary-badge {
+    @apply badge badge-soft;
+  }
+
+  .primary-underline {
+    @apply underline decoration-[var(--color-primary)] decoration-2 underline-offset-4;
+  }
+}
+
+@layer base {
+  h1 {
+    @apply my-1 text-3xl font-bold;
+  }
+
+  h2 {
+    @apply my-1 text-2xl font-bold;
+  }
+
+  h3 {
+    @apply text-lg font-medium;
+  }
+
+  h4 {
+    @apply font-medium;
+  }
+
+  h5 {
+    @apply text-sm font-medium;
+  }
+
+  h6 {
+    @apply text-xs font-medium;
+  }
+
+  p {
+    @apply leading-7;
+  }
+
+  u,
+  a {
+    @apply text-base-content;
+  }
+  /* 1. Target all images in the prose/markdown area */
+  .prose img {
+    @apply block mx-auto rounded-lg shadow-md bg-white;
+    /* Adding bg-white here ensures every image has a white background */
+  }
+
+  /* 2. Specifically target SVGs if you only want them to be white */
+  /* This is useful if your SVGs have transparent backgrounds but dark lines */
+  .prose img[src*=".svg"] {
+    @apply bg-white p-4; 
+    /* Adding padding (p-4) ensures the white background 
+       acts like a frame around the diagram */
+  }
+}
+
+html[data-theme="dark"] {
+  & .astro-code,
+  & .astro-code span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    /* Optional, if you also want font styles */
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}

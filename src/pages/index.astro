@@ -1,0 +1,102 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import { meta, about } from "../consts.ts";
+import LucideIcon from "../components/LucideIcon.astro";
+---
+
+<Layout title={meta.about.title} description={meta.about.description}>
+
+  <section>
+    <h1 set:html={about.headLine} />
+    <p class="text-lg font-medium">{about.tagLine}</p>
+    <Image
+      src={about.profilePic}
+      alt="Profile Picture"
+      class="mx-auto my-6 w-32 rounded-full shadow-md"
+    />
+    <p set:html={about.academicBio} class="text-base-content/80 leading-relaxed" />
+    <p set:html={about.personalBio} class="text-base-content/80 leading-relaxed" />
+    
+    <div class="my-6 flex gap-2">
+      {
+        about.links.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            class="btn btn-soft btn-circle btn-accent"
+            title={link.icon}
+          >
+            <LucideIcon name={link.icon} />
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row">
+
+
+       <!--  include this when you have at least one project
+       
+      <a class="btn btn-primary sm:flex-1" href="/projects">
+        Research Projects
+      </a>
+      -->
+      <a class="btn btn-soft btn-accent sm:flex-1" href="/notes">
+        Notes
+      </a>
+    </div>
+  </section>
+  
+<section class="mt-12">
+
+    <h2>
+      <span class="fancy-highlight">Academic Background</span>
+    </h2>
+    <div class="mt-6 flex flex-col gap-6">
+      {
+        about.education.map((edu) => (
+          <div class="flex gap-4 border-b border-base-content/10 pb-6 last:border-none last:pb-0">
+            {/* Logo Container: White background, fixed dimensions, round, no borders */}
+            <div class="flex-shrink-0">
+              {edu.logo && (
+                <div class="h-14 w-14 rounded-full bg-white flex items-center justify-center overflow-hidden">
+                  <Image
+                    src={edu.logo}
+                    alt={`${edu.institution} logo`}
+                    class="h-full w-full object-contain border-none"
+                  />
+                </div>
+              )}
+            </div>
+            
+            {/* Text Content on the right */}
+            <div class="flex flex-col">
+              <h3 class="text-lg font-bold leading-tight">{edu.institution}</h3>
+              <p class="mt-1 text-base font-medium text-base-content/90">{edu.title}</p>
+              <p class="mt-0.5 text-sm text-base-content/60">{edu.timeline}</p>
+              
+              {edu.description && (
+                <div class="mt-3 flex items-start gap-2">
+                  <LucideIcon name="Diamond" class="mt-0.5 h-4 w-4 flex-shrink-0 text-base-content/80" />
+                  <p class="text-sm font-medium text-base-content/80 leading-relaxed">
+                    {edu.description}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mt-12 border-t border-base-content/10 pt-8">
+    <h2>
+      <span class="fancy-highlight">Get In Touch</span>
+    </h2>
+    <div class="mt-4">
+      <p set:html={about.getInTouch} class="text-base-content/80 text-lg leading-relaxed" />
+    </div>
+  </section>
+</Layout>

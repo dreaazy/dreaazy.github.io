@@ -1,0 +1,73 @@
+---
+// src/pages/projects/[...slug].astro
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('projects');
+  return entries.map((entry) => ({
+    params: { 
+      slug: entry.id.replace('/index', '') 
+    },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Get the parent folder name
+const currentFolder = entry.id.split('/')[0];
+
+// Fetch siblings and sort them by the 'order' field
+const projectArticles = await getCollection('projects', ({ id, data }) => {
+  return id.startsWith(currentFolder) && !id.endsWith('index');
+});
+
+const sortedArticles = projectArticles.sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout title={entry.data.title}>
+  <article class="prose prose-lg max-w-none mx-auto">
+    <header class="mb-10 border-b pb-6">
+      <h1 class="text-4xl font-bold">{entry.data.title}</h1>
+      <p class="text-base-content/60 italic">{entry.data.description}</p>
+    </header>
+
+    <div class="markdown-content">
+      <Content />
+    </div>
+
+    {/* Only show the list if we are on the Hub (index) */}
+    {entry.id.endsWith('index') && sortedArticles.length > 0 && (
+      <section class="mt-16 border-t pt-10">
+        <h2 class="text-2xl font-bold mb-6">Research Sequence</h2>
+        <div class="space-y-4">
+          {sortedArticles.map((art) => (
+            <a 
+              href={`/projects/${art.id}`} 
+              class="flex items-center p-4 rounded-lg bg-base-200 hover:bg-primary/10 transition-colors group"
+            >
+              <span class="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-content text-sm font-bold mr-4">
+                {art.data.order}
+              </span>
+              <div>
+                <h3 class="font-bold text-lg m-0 group-hover:text-primary">{art.data.title}</h3>
+                <p class="text-sm opacity-70 m-0">{art.data.description}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Back button for sub-articles */}
+    {!entry.id.endsWith('index') && (
+      <div class="mt-12 pt-8 border-t">
+        <a href={`/projects/${currentFolder}`} class="btn btn-outline btn-sm">
+          ← Back to {currentFolder} Overview
+        </a>
+      </div>
+    )}
+  </article>
+</Layout>

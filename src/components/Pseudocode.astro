@@ -1,0 +1,66 @@
+---
+// src/components/Pseudocode.astro
+---
+<div class="pseudocode-container my-8 overflow-x-auto">
+  <slot />
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pseudocode@2.4.1/build/pseudocode.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" is:inline></script>
+<script src="https://cdn.jsdelivr.net/npm/pseudocode@2.4.1/build/pseudocode.min.js" is:inline></script>
+
+<script is:inline>
+  function renderAllAlgorithms() {
+    if (typeof pseudocode === 'undefined' || typeof katex === 'undefined') return;
+    document.querySelectorAll('.pseudocode-item').forEach((el) => {
+      if (!el.dataset.rendered) {
+        try {
+          pseudocode.renderElement(el, { lineNumber: true });
+          el.dataset.rendered = "true";
+
+          // Remove "Algorithm N" from the caption line, keep only the name
+          const captionLine = el.parentElement.querySelector('.ps-algorithm > .ps-line:first-child');
+          if (captionLine) {
+            const keyword = captionLine.querySelector('.ps-keyword');
+            if (keyword) keyword.remove();
+            captionLine.childNodes.forEach(node => {
+              if (node.nodeType === Node.TEXT_NODE) {
+                node.textContent = node.textContent.replace(/^\s*\d+\s*/, '');
+              }
+            });
+          }
+        } catch(e) {
+          console.error('pseudocode render failed:', e, el);
+        }
+      }
+    });
+  }
+
+  window.addEventListener('load', renderAllAlgorithms);
+  document.addEventListener('astro:page-load', renderAllAlgorithms);
+  setTimeout(renderAllAlgorithms, 500);
+</script>
+
+<style is:global>
+  .ps-root {
+    font-size: 1.25rem !important;
+    color: inherit !important;
+  }
+  .ps-algorithm {
+    border-top: 2px solid currentColor !important;
+    border-bottom: 2px solid currentColor !important;
+  }
+  .ps-root .ps-algorithm.with-caption > .ps-line:first-child {
+    border-bottom: none !important;
+    padding-bottom: 0.5rem !important;
+  }
+  /* More breathing room between lines */
+  .ps-root .ps-line {
+    line-height: 1.5 !important;
+  }
+  .pseudocode-container {
+    background: transparent;
+  }
+</style>

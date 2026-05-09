@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  
+  return notes.map((entry) => ({
+    // The ID maps exactly to the URL. 
+    // e.g., 'math/calculus' -> /notes/math/calculus
+    params: { slug: entry.id }, 
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Layout title={entry.data.title}>
+  <article class="prose prose-lg max-w-none mx-auto py-10">
+    <nav class="mb-8 text-sm">
+      <a href="/notes" class="text-base-content/60 hover:text-primary">← Back to all notes</a>
+    </nav>
+    
+    <header class="mb-8 border-b pb-6">
+      <h1 class="text-4xl font-bold mb-2">{entry.data.title}</h1>
+      <div class="flex gap-4 text-base-content/60 italic">
+        <span>{entry.data.pubDate.toLocaleDateString()}</span>
+      </div>
+    </header>
+
+    <div class="markdown-content">
+      <Content />
+    </div>
+  </article>
+</Layout>
