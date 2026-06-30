@@ -22,7 +22,7 @@ import PaduaLogo from "./assets/education/padua.png";
 import BexhillLogo from "./assets/education/bexhill.jpg";
 
 
-export const SITE_URL: string = "https://dreaazy.github.io";
+export const SITE_URL: string = "https://simone-piccinini.github.io";
 
 
 
